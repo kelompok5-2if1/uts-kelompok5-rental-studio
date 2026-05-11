@@ -39,12 +39,23 @@
 
     </select>
 
-    <button type="submit"
-            class="bg-green-500 text-white px-4 py-2 rounded">
+    <div class="flex gap-3">
 
-        Simpan
+        <button type="submit"
+                class="bg-green-500 text-white px-4 py-2 rounded">
 
-    </button>
+            Simpan
+
+        </button>
+
+        <a href="{{ route('studio.index') }}"
+        class="bg-gray-500 text-white px-4 py-2 rounded">
+
+            Back
+
+        </a>
+
+    </div>
 
 </form>
 

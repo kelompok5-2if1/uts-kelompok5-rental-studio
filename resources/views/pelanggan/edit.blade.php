@@ -30,12 +30,23 @@
            value="{{ $pelanggan->email }}"
            class="border p-2 w-full mb-3">
 
-    <button type="submit"
-            class="bg-blue-500 text-white px-4 py-2 rounded">
+    <div class="flex gap-3">
 
-        Update
+        <button type="submit"
+                class="bg-blue-500 text-white px-4 py-2 rounded">
 
-    </button>
+            Update
+
+        </button>
+
+        <a href="{{ route('pelanggan.index') }}"
+        class="bg-gray-500 text-white px-4 py-2 rounded">
+
+            Back
+
+        </a>
+
+    </div>
 
 </form>
 

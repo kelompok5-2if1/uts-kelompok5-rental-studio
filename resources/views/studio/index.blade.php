@@ -61,7 +61,8 @@
                     @csrf
                     @method('DELETE')
 
-                    <button type="submit"
+                   <button type="submit"
+                            onclick="return confirm('Yakin ingin menghapus studio ini?')"
                             class="bg-red-500 text-white px-3 py-1 rounded">
 
                         Hapus

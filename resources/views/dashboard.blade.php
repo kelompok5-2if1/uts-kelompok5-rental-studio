@@ -31,7 +31,12 @@
                         Data Studio
 
                     </a>
+                    <a href="{{ route('kategori.index') }}"
+                        class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-3 px-5 rounded ml-3">
 
+                            Data Kategori
+
+                    </a>
                 </div>
 
             </div>

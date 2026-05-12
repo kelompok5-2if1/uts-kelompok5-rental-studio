@@ -1,0 +1,46 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('booking_studios', function (Blueprint $table) {
+
+            $table->id();
+
+            $table->foreignId('pelanggan_id')
+                  ->constrained()
+                  ->onDelete('cascade');
+
+            $table->foreignId('studio_id')
+                  ->constrained()
+                  ->onDelete('cascade');
+
+            $table->date('tanggal_booking');
+
+            $table->time('jam_mulai');
+
+            $table->time('jam_selesai');
+
+            $table->integer('total_harga');
+
+            $table->enum('status', [
+                'Pending',
+                'Selesai',
+                'Batal'
+            ]);
+
+            $table->timestamps();
+
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('booking_studios');
+    }
+};

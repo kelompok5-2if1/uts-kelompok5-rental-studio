@@ -13,4 +13,9 @@ class Kategori extends Model
         'nama_kategori',
         'deskripsi'
     ];
+
+    public function alatBand()
+    {
+        return $this->hasMany(AlatBand::class, 'kategori_alat_id');
+    }
 }

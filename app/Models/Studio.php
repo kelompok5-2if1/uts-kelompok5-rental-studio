@@ -15,4 +15,8 @@ class Studio extends Model
         'harga_per_jam',
         'status'
     ];
+    public function bookingStudio()
+    {
+         return $this->hasMany(BookingStudio::class);
+    }
 }

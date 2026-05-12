@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\StudioController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\AlatBandController;
+use App\Http\Controllers\BookingStudioController;
+use App\Http\Controllers\RentalAlatController;
 
 
 Route::get('/', function () {
@@ -23,8 +26,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('pelanggan', PelangganController::class);
     Route::resource('studio', StudioController::class);
     Route::resource('kategori', KategoriController::class);
+    Route::resource('alat-band', AlatBandController::class);
+    Route::resource('booking-studio', BookingStudioController::class);
+    Route::resource('rental-alat', RentalAlatController::class);
 
-
+    
     
    
 

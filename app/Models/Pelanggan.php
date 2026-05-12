@@ -15,4 +15,13 @@ class Pelanggan extends Model
         'alamat',
         'email'
     ];
+
+        public function bookingStudio()
+        {   
+            return $this->hasMany(BookingStudio::class);
+        }
+        public function rentalAlat()
+        {
+            return $this->hasMany(RentalAlat::class);
+        }
 }

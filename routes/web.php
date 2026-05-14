@@ -9,6 +9,7 @@ use App\Http\Controllers\AlatBandController;
 use App\Http\Controllers\BookingStudioController;
 use App\Http\Controllers\RentalAlatController;
 use App\Http\Controllers\DetailRentalController;
+use App\Http\Controllers\PembayaranController;
 
 
 Route::get('/', function () {
@@ -31,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('booking-studio', BookingStudioController::class);
     Route::resource('rental-alat', RentalAlatController::class);
     Route::resource('detail-rental', DetailRentalController::class);
+    Route::resource('pembayaran', PembayaranController::class);
 
     
     

@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\RentalAlat;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AlatBand extends Model
 {
@@ -18,12 +17,8 @@ class AlatBand extends Model
         'kondisi'
     ];
 
-    public function rentalAlat()
+    public function kategori()
     {
-        return $this->hasMany(RentalAlat::class);
-    }
-     public function detailRental()
-    {
-        return $this->hasMany(DetailRental::class);
+        return $this->belongsTo(Kategori::class, 'kategori_alat_id');
     }
 }

@@ -10,7 +10,7 @@ use App\Http\Controllers\BookingStudioController;
 use App\Http\Controllers\RentalAlatController;
 use App\Http\Controllers\DetailRentalController;
 use App\Http\Controllers\PembayaranController;
-
+use App\Http\Controllers\LaporanRentalController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('rental-alat', RentalAlatController::class);
     Route::resource('detail-rental', DetailRentalController::class);
     Route::resource('pembayaran', PembayaranController::class);
+    Route::resource('laporan-rental', LaporanRentalController::class);
 
     
     

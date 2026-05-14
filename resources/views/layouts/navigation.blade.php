@@ -49,6 +49,14 @@
                         Rental Alat
                     </x-nav-link>
 
+                    <x-nav-link :href="url('/detail-rental')">
+                        Detail Rental
+                    </x-nav-link>
+
+                    <x-nav-link :href="url('/pembayaran')">
+                        Pembayaran
+                    </x-nav-link>
+
                 </div>
 
             </div>
@@ -174,6 +182,14 @@
 
             <x-responsive-nav-link :href="url('/rental-alat')">
                 Rental Alat
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="url('/detail-rental')">
+                Detail Rental
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="url('/pembayaran')">
+                Pembayaran
             </x-responsive-nav-link>
 
         </div>

@@ -22,4 +22,8 @@ class AlatBand extends Model
     {
         return $this->hasMany(RentalAlat::class);
     }
+     public function detailRental()
+    {
+        return $this->hasMany(DetailRental::class);
+    }
 }

@@ -9,18 +9,11 @@
         </h1>
     </div>
 
-    {{-- Alert --}}
-    @if(session('success'))
-        <div class="bg-green-500 text-white p-3 rounded mb-5">
-            {{ session('success') }}
-        </div>
-    @endif
-
     {{-- Toolbar --}}
     <div class="flex flex-col lg:flex-row gap-4 justify-between mb-6">
 
         <a href="{{ route('alat-band.create') }}"
-           class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 text-center">
+           class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-center">
 
             + Tambah Alat
 
@@ -46,17 +39,17 @@
                 </option>
 
                 <option value="Baik"
-                    {{ $kondisi=='Baik'?'selected':'' }}>
+                    {{ $kondisi == 'Baik' ? 'selected' : '' }}>
                     Baik
                 </option>
 
                 <option value="Rusak"
-                    {{ $kondisi=='Rusak'?'selected':'' }}>
+                    {{ $kondisi == 'Rusak' ? 'selected' : '' }}>
                     Rusak
                 </option>
 
                 <option value="Maintenance"
-                    {{ $kondisi=='Maintenance'?'selected':'' }}>
+                    {{ $kondisi == 'Maintenance' ? 'selected' : '' }}>
                     Maintenance
                 </option>
 
@@ -64,7 +57,7 @@
 
             <button
                 type="submit"
-                class="bg-gray-700 text-white px-4 py-2 rounded-lg">
+                class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg">
 
                 Cari
 
@@ -73,7 +66,7 @@
             @if($search || $kondisi)
 
                 <a href="{{ route('alat-band.index') }}"
-                   class="bg-red-500 text-white px-4 py-2 rounded-lg text-center">
+                   class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-center">
 
                     Reset
 
@@ -95,7 +88,6 @@
                 <thead class="bg-gray-100">
 
                     <tr>
-
                         <th class="p-3 text-center">No</th>
                         <th class="p-3 text-center">Foto</th>
                         <th class="p-3">Nama</th>
@@ -104,7 +96,6 @@
                         <th class="p-3">Harga</th>
                         <th class="p-3 text-center">Kondisi</th>
                         <th class="p-3 text-center">Aksi</th>
-
                     </tr>
 
                 </thead>
@@ -157,13 +148,13 @@
 
                         <td class="p-3 text-center">
 
-                            @if($item->kondisi=='Baik')
+                            @if($item->kondisi == 'Baik')
 
                                 <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm">
                                     Baik
                                 </span>
 
-                            @elseif($item->kondisi=='Rusak')
+                            @elseif($item->kondisi == 'Rusak')
 
                                 <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm">
                                     Rusak
@@ -184,13 +175,14 @@
                             <div class="flex flex-col md:flex-row gap-2 justify-center">
 
                                 <a href="{{ route('alat-band.edit',$item->id) }}"
-                                   class="bg-yellow-500 text-white px-3 py-2 rounded text-center">
+                                   class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded text-center">
 
                                     Edit
 
                                 </a>
 
                                 <form
+                                    id="delete-form-{{ $item->id }}"
                                     action="{{ route('alat-band.destroy',$item->id) }}"
                                     method="POST">
 
@@ -198,8 +190,9 @@
                                     @method('DELETE')
 
                                     <button
-                                        onclick="return confirm('Yakin ingin menghapus data?')"
-                                        class="bg-red-500 text-white px-3 py-2 rounded w-full">
+                                        type="button"
+                                        onclick="confirmDelete({{ $item->id }})"
+                                        class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded w-full">
 
                                         Hapus
 
@@ -217,8 +210,7 @@
 
                     <tr>
 
-                        <td
-                            colspan="8"
+                        <td colspan="8"
                             class="text-center py-10">
 
                             Tidak ada data alat band
@@ -245,5 +237,38 @@
     </div>
 
 </div>
+
+<script>
+
+function confirmDelete(id)
+{
+    Swal.fire({
+
+        title: 'Yakin ingin menghapus?',
+        text: 'Data yang dihapus tidak dapat dikembalikan',
+
+        icon: 'warning',
+
+        showCancelButton: true,
+
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
+
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal'
+
+    }).then((result)=>{
+
+        if(result.isConfirmed)
+        {
+            document
+                .getElementById('delete-form-'+id)
+                .submit();
+        }
+
+    });
+}
+
+</script>
 
 </x-app-layout>

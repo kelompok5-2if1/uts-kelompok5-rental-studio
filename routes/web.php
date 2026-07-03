@@ -40,11 +40,15 @@ Route::get('/dashboard', function () {
     return view('dashboard', [
 
         // statistik utama
-        'totalPelanggan' => Pelanggan::count(),
-        'totalStudio'    => Studio::count(),
-        'totalAlat'      => AlatBand::count(),
-        'totalBooking'   => BookingStudio::count(),
-        'totalRental'    => RentalAlat::count(),
+        'totalPelanggan'  => Pelanggan::count(),
+        'totalStudio'     => Studio::count(),
+        'totalAlat'       => AlatBand::count(),
+        'totalBooking'    => BookingStudio::count(),
+        'totalRental'     => RentalAlat::count(),
+        'totalPembayaran' => Pembayaran::count(),
+
+        // pendapatan
+        'totalPendapatan' => Pembayaran::sum('total_bayar') ?? 0,
 
         // tambahan dashboard
         'bookingTerbaru' => BookingStudio::with(['studio', 'pelanggan'])
@@ -56,8 +60,6 @@ Route::get('/dashboard', function () {
                             ->latest()
                             ->take(5)
                             ->get(),
-
-        'totalPendapatan' => Pembayaran::sum('total_bayar') ?? 0,
 
     ]);
 

@@ -122,6 +122,46 @@
 
             </div>
 
+            <!-- Statistics Cards (Tambahan Baru) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-5 mb-6 md:mb-8">
+                <div class="bg-white p-5 rounded-xl shadow">
+                    <h3 class="text-gray-500">Pelanggan</h3>
+                    <p class="text-3xl font-bold">
+                        {{ $totalPelanggan }}
+                    </p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow">
+                    <h3 class="text-gray-500">Studio</h3>
+                    <p class="text-3xl font-bold">
+                        {{ $totalStudio }}
+                    </p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow">
+                    <h3 class="text-gray-500">Alat Band</h3>
+                    <p class="text-3xl font-bold">
+                        {{ $totalAlat }}
+                    </p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow">
+                    <h3 class="text-gray-500">Booking</h3>
+                    <p class="text-3xl font-bold">
+                        {{ $totalBooking }}
+                    </p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow">
+                    <h3 class="text-gray-500">Rental</h3>
+                    <p class="text-3xl font-bold">
+                        {{ $totalRental }}
+                    </p>
+                </div>
+                <div class="bg-green-600 text-white p-5 rounded-xl shadow">
+                    <h3>Total Pendapatan</h3>
+                    <p class="text-2xl font-bold">
+                        Rp {{ number_format($totalPendapatan,0,',','.') }}
+                    </p>
+                </div>
+            </div>
+
             <!-- Latest Transactions -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
 

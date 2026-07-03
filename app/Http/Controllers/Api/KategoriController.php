@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Models\Kategori;
+use App\Http\Requests\StoreKategoriRequest;
+use App\Http\Requests\UpdateKategoriRequest;
+use App\Http\Resources\KategoriResource;
+use App\Http\Resources\KategoriCollection;
+use Illuminate\Http\Response;
+
+class KategoriController extends Controller
+{
+    public function index()
+    {
+        $kategori = Kategori::paginate(10);
+        return new KategoriCollection($kategori);
+    }
+
+    public function store(StoreKategoriRequest $request)
+    {
+        $kategori = Kategori::create($request->validated());
+        return new KategoriResource($kategori);
+    }
+
+    public function show(Kategori $kategori)
+    {
+        return new KategoriResource($kategori);
+    }
+
+    public function update(UpdateKategoriRequest $request, Kategori $kategori)
+    {
+        $kategori->update($request->validated());
+        return new KategoriResource($kategori);
+    }
+
+    public function destroy(Kategori $kategori)
+    {
+        $kategori->delete();
+        return response()->json(['message' => 'Kategori deleted successfully'], Response::HTTP_OK);
+    }
+}

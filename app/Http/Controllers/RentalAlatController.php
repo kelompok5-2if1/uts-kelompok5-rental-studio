@@ -6,17 +6,31 @@ use Illuminate\Http\Request;
 use App\Models\RentalAlat;
 use App\Models\Pelanggan;
 use App\Models\AlatBand;
+use App\Http\Requests\StoreRentalAlatRequest;
+use App\Http\Requests\UpdateRentalAlatRequest;
 
 class RentalAlatController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->query('search', '');
+        $status = $request->query('status', '');
         $rentalAlat = RentalAlat::with([
             'pelanggan',
             'alatBand'
-        ])->get();
+        ])->when($search, function ($query) use ($search) {
+            return $query->whereHas('pelanggan', function ($q) use ($search) {
+                            $q->where('nama', 'like', '%' . $search . '%');
+                        })
+                        ->orWhereHas('alatBand', function ($q) use ($search) {
+                            $q->where('nama_alat', 'like', '%' . $search . '%');
+                        })
+                        ->orWhere('status', 'like', '%' . $search . '%');
+        })->when($status, function ($query) use ($status) {
+            return $query->where('status', $status);
+        })->paginate(10)->appends($request->query());
 
-        return view('rental-alat.index', compact('rentalAlat'));
+        return view('rental-alat.index', compact('rentalAlat', 'search', 'status'));
     }
 
     public function create()
@@ -31,9 +45,9 @@ class RentalAlatController extends Controller
         ));
     }
 
-    public function store(Request $request)
+    public function store(StoreRentalAlatRequest $request)
     {
-        RentalAlat::create($request->all());
+        RentalAlat::create($request->validated());
 
         return redirect('/rental-alat');
     }
@@ -53,11 +67,11 @@ class RentalAlatController extends Controller
         ));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateRentalAlatRequest $request, $id)
     {
         $rentalAlat = RentalAlat::findOrFail($id);
 
-        $rentalAlat->update($request->all());
+        $rentalAlat->update($request->validated());
 
         return redirect('/rental-alat');
     }

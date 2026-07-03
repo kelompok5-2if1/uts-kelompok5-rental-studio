@@ -13,4 +13,9 @@ class Pembayaran extends Model
         'total_bayar',
         'status'
     ];
+
+    public function rentalAlat()
+    {
+        return $this->belongsTo(RentalAlat::class);
+    }
 }

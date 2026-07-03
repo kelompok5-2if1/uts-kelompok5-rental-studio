@@ -4,14 +4,41 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Studio;
+use App\Http\Requests\StoreStudioRequest;
+use App\Http\Requests\UpdateStudioRequest;
+use Illuminate\Support\Facades\Storage;
 
 class StudioController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $studio = Studio::all();
+        $search = $request->query('search', '');
+        $filter = $request->query('filter', '');
 
-        return view('studio.index', compact('studio'));
+        $studio = Studio::query()
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama_studio', 'like', '%' . $search . '%')
+                        ->orWhere('status', 'like', '%' . $search . '%');
+                });
+            })
+            ->when($filter === 'Tersedia', function ($query) {
+                $query->where('status', 'Tersedia');
+            })
+            ->when($filter === 'Maintenance', function ($query) {
+                $query->where('status', 'Maintenance');
+            })
+            ->when($filter === 'booking', function ($query) {
+                $query->whereHas('bookingStudio');
+            })
+            ->when($filter === 'kosong', function ($query) {
+                $query->whereDoesntHave('bookingStudio');
+            })
+            ->orderBy('nama_studio')
+            ->paginate(10)
+            ->appends($request->query());
+
+        return view('studio.index', compact('studio', 'search', 'filter'));
     }
 
     public function create()
@@ -19,9 +46,15 @@ class StudioController extends Controller
         return view('studio.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreStudioRequest $request)
     {
-        Studio::create($request->all());
+        $data = $request->validated();
+
+        if ($request->hasFile('foto')) {
+            $data['foto'] = $request->file('foto')->store('studio', 'public');
+        }
+
+        Studio::create($data);
 
         return redirect('/studio');
     }
@@ -33,11 +66,20 @@ class StudioController extends Controller
         return view('studio.edit', compact('studio'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateStudioRequest $request, $id)
     {
         $studio = Studio::findOrFail($id);
 
-        $studio->update($request->all());
+        $data = $request->validated();
+
+        if ($request->hasFile('foto')) {
+            if ($studio->foto) {
+                Storage::disk('public')->delete($studio->foto);
+            }
+            $data['foto'] = $request->file('foto')->store('studio', 'public');
+        }
+
+        $studio->update($data);
 
         return redirect('/studio');
     }
@@ -45,6 +87,10 @@ class StudioController extends Controller
     public function destroy($id)
     {
         $studio = Studio::findOrFail($id);
+
+        if ($studio->foto) {
+            Storage::disk('public')->delete($studio->foto);
+        }
 
         $studio->delete();
 

@@ -9,16 +9,12 @@ class KategoriSeeder extends Seeder
 {
     public function run(): void
     {
-        Kategori::create([
-            'nama_kategori' => 'Gitar'
-        ]);
-
-        Kategori::create([
-            'nama_kategori' => 'Drum'
-        ]);
-
-        Kategori::create([
-            'nama_kategori' => 'Keyboard'
+        Kategori::insert([
+            ['nama_kategori' => 'Gitar'],
+            ['nama_kategori' => 'Drum'],
+            ['nama_kategori' => 'Keyboard'],
+            ['nama_kategori' => 'Bass'],
+            ['nama_kategori' => 'Audio'],
         ]);
     }
 }

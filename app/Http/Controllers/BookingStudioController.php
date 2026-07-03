@@ -6,17 +6,31 @@ use Illuminate\Http\Request;
 use App\Models\BookingStudio;
 use App\Models\Pelanggan;
 use App\Models\Studio;
+use App\Http\Requests\StoreBookingStudioRequest;
+use App\Http\Requests\UpdateBookingStudioRequest;
 
 class BookingStudioController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->query('search', '');
+        $status = $request->query('status', '');
         $bookingStudio = BookingStudio::with([
             'pelanggan',
             'studio'
-        ])->get();
+        ])->when($search, function ($query) use ($search) {
+            return $query->whereHas('pelanggan', function ($q) use ($search) {
+                            $q->where('nama', 'like', '%' . $search . '%');
+                        })
+                        ->orWhereHas('studio', function ($q) use ($search) {
+                            $q->where('nama_studio', 'like', '%' . $search . '%');
+                        })
+                        ->orWhere('status', 'like', '%' . $search . '%');
+        })->when($status, function ($query) use ($status) {
+            return $query->where('status', $status);
+        })->paginate(10)->appends($request->query());
 
-        return view('booking-studio.index', compact('bookingStudio'));
+        return view('booking-studio.index', compact('bookingStudio', 'search', 'status'));
     }
 
     public function create()
@@ -31,9 +45,9 @@ class BookingStudioController extends Controller
         ));
     }
 
-    public function store(Request $request)
+    public function store(StoreBookingStudioRequest $request)
     {
-        BookingStudio::create($request->all());
+        BookingStudio::create($request->validated());
 
         return redirect('/booking-studio');
     }
@@ -53,11 +67,11 @@ class BookingStudioController extends Controller
         ));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateBookingStudioRequest $request, $id)
     {
         $bookingStudio = BookingStudio::findOrFail($id);
 
-        $bookingStudio->update($request->all());
+        $bookingStudio->update($request->validated());
 
         return redirect('/booking-studio');
     }

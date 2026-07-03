@@ -14,7 +14,8 @@ class AlatBand extends Model
         'nama_alat',
         'stok',
         'harga_sewa',
-        'kondisi'
+        'kondisi',
+        'foto'
     ];
 
     public function kategori()

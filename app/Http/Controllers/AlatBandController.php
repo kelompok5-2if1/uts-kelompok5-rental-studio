@@ -2,57 +2,169 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\AlatBand;
 use App\Models\Kategori;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\StoreAlatBandRequest;
+use App\Http\Requests\UpdateAlatBandRequest;
 
 class AlatBandController extends Controller
 {
-    public function index()
+    /**
+     * Display listing.
+     */
+    public function index(Request $request)
     {
-        $alatBand = AlatBand::with('kategori')->get();
+        $search = $request->search;
+        $kondisi = $request->kondisi;
 
-        return view('alat-band.index', compact('alatBand'));
+        $alatBand = AlatBand::with('kategori')
+
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+
+                    $q->where('nama_alat', 'like', "%{$search}%")
+                      ->orWhere('kondisi', 'like', "%{$search}%");
+
+                });
+            })
+
+            ->when($kondisi, function ($query) use ($kondisi) {
+                $query->where('kondisi', $kondisi);
+            })
+
+            ->orderBy('nama_alat')
+            ->paginate(10)
+            ->appends($request->query());
+
+        return view(
+            'alat-band.index',
+            compact(
+                'alatBand',
+                'search',
+                'kondisi'
+            )
+        );
     }
 
+    /**
+     * Show create form.
+     */
     public function create()
     {
-        $kategori = Kategori::all();
+        $kategori = Kategori::orderBy('nama_kategori')
+                            ->get();
 
-        return view('alat-band.create', compact('kategori'));
+        return view(
+            'alat-band.create',
+            compact('kategori')
+        );
     }
 
-    public function store(Request $request)
+    /**
+     * Store data.
+     */
+    public function store(StoreAlatBandRequest $request)
     {
-        AlatBand::create($request->all());
+        $data = $request->validated();
 
-        return redirect('/alat-band');
+        if ($request->hasFile('foto')) {
+
+            $data['foto'] = $request
+                ->file('foto')
+                ->store('alat-band', 'public');
+        }
+
+        AlatBand::create($data);
+
+        return redirect()
+            ->route('alat-band.index')
+            ->with(
+                'success',
+                'Alat band berhasil ditambahkan'
+            );
     }
 
+    /**
+     * Show edit form.
+     */
     public function edit($id)
     {
         $alatBand = AlatBand::findOrFail($id);
 
-        $kategori = Kategori::all();
+        $kategori = Kategori::orderBy('nama_kategori')
+                            ->get();
 
-        return view('alat-band.edit', compact('alatBand', 'kategori'));
+        return view(
+            'alat-band.edit',
+            compact(
+                'alatBand',
+                'kategori'
+            )
+        );
     }
 
-    public function update(Request $request, $id)
-    {
+    /**
+     * Update data.
+     */
+    public function update(
+        UpdateAlatBandRequest $request,
+        $id
+    ) {
         $alatBand = AlatBand::findOrFail($id);
 
-        $alatBand->update($request->all());
+        $data = $request->validated();
 
-        return redirect('/alat-band');
+        if ($request->hasFile('foto')) {
+
+            if (
+                $alatBand->foto &&
+                Storage::disk('public')
+                    ->exists($alatBand->foto)
+            ) {
+                Storage::disk('public')
+                    ->delete($alatBand->foto);
+            }
+
+            $data['foto'] = $request
+                ->file('foto')
+                ->store('alat-band', 'public');
+        }
+
+        $alatBand->update($data);
+
+        return redirect()
+            ->route('alat-band.index')
+            ->with(
+                'success',
+                'Alat band berhasil diperbarui'
+            );
     }
 
+    /**
+     * Delete data.
+     */
     public function destroy($id)
     {
         $alatBand = AlatBand::findOrFail($id);
 
+        if (
+            $alatBand->foto &&
+            Storage::disk('public')
+                ->exists($alatBand->foto)
+        ) {
+            Storage::disk('public')
+                ->delete($alatBand->foto);
+        }
+
         $alatBand->delete();
 
-        return redirect('/alat-band');
+        return redirect()
+            ->route('alat-band.index')
+            ->with(
+                'success',
+                'Alat band berhasil dihapus'
+            );
     }
 }

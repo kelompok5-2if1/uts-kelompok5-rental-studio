@@ -6,82 +6,120 @@
     Detail Rental
 </h1>
 
-<a href="{{ route('detail-rental.create') }}"
-   class="bg-blue-500 text-white px-4 py-2 rounded">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+    <a href="{{ route('detail-rental.create') }}"
+       class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
 
-    Tambah Data
+        Tambah Data
 
-</a>
+    </a>
+    
+    <form action="{{ route('detail-rental.index') }}" method="GET" class="w-full md:w-auto">
+        <div class="flex gap-2">
+            <input type="text" 
+                   name="search" 
+                   value="{{ $search }}" 
+                   placeholder="Cari nama alat atau jumlah..."
+                   class="px-4 py-2 border rounded w-full md:w-64">
+            <button type="submit" 
+                    class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition">
+                Cari
+            </button>
+            @if($search)
+                <a href="{{ route('detail-rental.index') }}" 
+                   class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 transition">
+                    Reset
+                </a>
+            @endif
+        </div>
+    </form>
+</div>
 
-<table class="table-auto w-full mt-4 border">
+<div class="overflow-x-auto shadow rounded-lg">
+    <table class="table-auto w-full border">
 
-<tr class="bg-gray-200">
+    <thead>
+        <tr class="bg-gray-200">
+            <th class="border p-2">No</th>
+            <th class="border p-2">Alat</th>
+            <th class="border p-2">Jumlah</th>
+            <th class="border p-2">Durasi</th>
+            <th class="border p-2">Subtotal</th>
+            <th class="border p-2">Aksi</th>
+        </tr>
+    </thead>
 
-    <th class="border p-2">Rental</th>
-    <th class="border p-2">Alat</th>
-    <th class="border p-2">Jumlah</th>
-    <th class="border p-2">Durasi</th>
-    <th class="border p-2">Subtotal</th>
-    <th class="border p-2">Aksi</th>
+    <tbody>
+        @forelse($detailRental as $item)
 
-</tr>
+        <tr>
 
-@foreach($detailRental as $item)
+            <td class="border p-2">
+                {{ $detailRental->firstItem() + $loop->index }}
+            </td>
 
-<tr>
+            <td class="border p-2">
+                {{ $item->alatBand->nama_alat ?? 'N/A' }}
+            </td>
 
-<td class="border p-2">
-    {{ $item->rental_alat_id }}
-</td>
+            <td class="border p-2 text-center">
+                {{ $item->jumlah }}
+            </td>
 
-<td class="border p-2">
-    {{ $item->alat_band_id }}
-</td>
+            <td class="border p-2 text-center">
+                {{ $item->durasi }} hari
+            </td>
 
-<td class="border p-2">
-    {{ $item->jumlah }}
-</td>
+            <td class="border p-2">
+                Rp {{ number_format($item->subtotal, 0, ',', '.') }}
+            </td>
 
-<td class="border p-2">
-    {{ $item->durasi }}
-</td>
+            <td class="border p-2 text-center">
 
-<td class="border p-2">
-    {{ $item->subtotal }}
-</td>
+            <a href="{{ route('detail-rental.edit', $item->id) }}"
+               class="bg-yellow-400 px-3 py-1 rounded text-sm hover:bg-yellow-500 transition">
 
-<td class="border p-2">
+                Edit
 
-<a href="{{ route('detail-rental.edit', $item->id) }}"
-   class="bg-yellow-400 px-3 py-1 rounded">
+            </a>
 
-    Edit
+            <form action="{{ route('detail-rental.destroy', $item->id) }}"
+                  method="POST"
+                  class="inline">
 
-</a>
+                @csrf
+                @method('DELETE')
 
-<form action="{{ route('detail-rental.destroy', $item->id) }}"
-      method="POST"
-      class="inline">
+                <button type="submit"
+                        onclick="return confirm('Yakin ingin menghapus data ini?')"
+                        class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition">
 
-    @csrf
-    @method('DELETE')
+                    Hapus
 
-    <button type="submit"
-            class="bg-red-500 text-white px-3 py-1 rounded">
+                </button>
 
-        Hapus
+            </form>
 
-    </button>
+            </td>
 
-</form>
+        </tr>
 
-</td>
+        @empty
 
-</tr>
+        <tr>
+            <td class="border p-2 text-center" colspan="6">
+                Tidak ada data detail rental
+            </td>
+        </tr>
 
-@endforeach
+        @endforelse
+    </tbody>
+    </table>
+</div>
 
-</table>
+<div class="mt-6">
+    {{ $detailRental->links() }}
+</div>
 
 </div>
 

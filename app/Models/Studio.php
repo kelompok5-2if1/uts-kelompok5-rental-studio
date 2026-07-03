@@ -13,7 +13,8 @@ class Studio extends Model
         'nama_studio',
         'kapasitas',
         'harga_per_jam',
-        'status'
+        'status',
+        'foto'
     ];
     public function bookingStudio()
     {

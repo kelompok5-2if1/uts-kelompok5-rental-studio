@@ -13,4 +13,14 @@ class DetailRental extends Model
         'durasi',
         'subtotal'
     ];
+
+    public function rentalAlat()
+    {
+        return $this->belongsTo(RentalAlat::class);
+    }
+
+    public function alatBand()
+    {
+        return $this->belongsTo(AlatBand::class);
+    }
 }

@@ -9,24 +9,26 @@ class RentalAlatSeeder extends Seeder
 {
     public function run(): void
     {
-        RentalAlat::create([
-            'pelanggan_id' => 1,
-            'alat_band_id' => 1,
-            'tanggal_sewa' => '2026-05-14',
-            'tanggal_kembali' => '2026-05-16',
-            'jumlah' => 2,
-            'total_harga' => 120000,
-            'status' => 'Dipinjam'
-        ]);
+        RentalAlat::insert([
+            [
+                'pelanggan_id'=>1,
+                'alat_band_id'=>1,
+                'tanggal_sewa'=>'2026-07-01',
+                'tanggal_kembali'=>'2026-07-03',
+                'jumlah'=>2,
+                'total_harga'=>60000,
+                'status'=>'Dipinjam'
+            ],
 
-        RentalAlat::create([
-            'pelanggan_id' => 2,
-            'alat_band_id' => 2,
-            'tanggal_sewa' => '2026-05-15',
-            'tanggal_kembali' => '2026-05-17',
-            'jumlah' => 1,
-            'total_harga' => 80000,
-            'status' => 'Dikembalikan'
+            [
+                'pelanggan_id'=>2,
+                'alat_band_id'=>3,
+                'tanggal_sewa'=>'2026-07-02',
+                'tanggal_kembali'=>'2026-07-04',
+                'jumlah'=>1,
+                'total_harga'=>100000,
+                'status'=>'Dikembalikan'
+            ],
         ]);
     }
 }

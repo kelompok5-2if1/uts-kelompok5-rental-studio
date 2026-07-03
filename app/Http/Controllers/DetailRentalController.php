@@ -6,14 +6,25 @@ use Illuminate\Http\Request;
 use App\Models\DetailRental;
 use App\Models\RentalAlat;
 use App\Models\AlatBand;
+use App\Http\Requests\StoreDetailRentalRequest;
+use App\Http\Requests\UpdateDetailRentalRequest;
 
 class DetailRentalController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $detailRental = DetailRental::all();
+        $search = $request->query('search', '');
+        $detailRental = DetailRental::with(['rentalAlat', 'alatBand'])
+                                     ->when($search, function ($query) use ($search) {
+                                         return $query->whereHas('alatBand', function ($q) use ($search) {
+                                                         $q->where('nama_alat', 'like', '%' . $search . '%');
+                                                     })
+                                                     ->orWhere('jumlah', 'like', '%' . $search . '%');
+                                     })
+                                     ->paginate(10)
+                                     ->appends($request->query());
 
-        return view('detail-rental.index', compact('detailRental'));
+        return view('detail-rental.index', compact('detailRental', 'search'));
     }
 
     public function create()
@@ -24,9 +35,9 @@ class DetailRentalController extends Controller
         return view('detail-rental.create', compact('rental', 'alat'));
     }
 
-    public function store(Request $request)
+    public function store(StoreDetailRentalRequest $request)
     {
-        DetailRental::create($request->all());
+        DetailRental::create($request->validated());
 
         return redirect('/detail-rental');
     }
@@ -45,11 +56,11 @@ class DetailRentalController extends Controller
         ));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateDetailRentalRequest $request, $id)
     {
         $detailRental = DetailRental::findOrFail($id);
 
-        $detailRental->update($request->all());
+        $detailRental->update($request->validated());
 
         return redirect('/detail-rental');
     }

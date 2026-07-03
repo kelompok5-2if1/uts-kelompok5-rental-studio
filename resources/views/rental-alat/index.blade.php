@@ -6,12 +6,41 @@
         Rental Alat
     </h1>
 
-    <a href="{{ route('rental-alat.create') }}"
-       class="bg-blue-500 text-white px-4 py-2 rounded">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-5">
+        <a href="{{ route('rental-alat.create') }}"
+           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
 
-        Tambah Rental
+            Tambah Rental
 
-    </a>
+        </a>
+        
+        <form action="{{ route('rental-alat.index') }}" method="GET" class="w-full md:w-auto">
+            <div class="flex flex-col md:flex-row gap-2">
+                <input type="text" 
+                       name="search" 
+                       value="{{ $search }}" 
+                       placeholder="Cari pelanggan atau alat..."
+                       class="px-4 py-2 border rounded w-full md:w-48">
+                <select name="status" 
+                        class="px-4 py-2 border rounded w-full md:w-auto"
+                        onchange="this.form.submit()">
+                    <option value="">Semua Status</option>
+                    <option value="Dipinjam" {{ $status == 'Dipinjam' ? 'selected' : '' }}>Dipinjam</option>
+                    <option value="Dikembalikan" {{ $status == 'Dikembalikan' ? 'selected' : '' }}>Dikembalikan</option>
+                </select>
+                <button type="submit" 
+                        class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition whitespace-nowrap">
+                    Cari
+                </button>
+                @if($search || $status)
+                    <a href="{{ route('rental-alat.index') }}" 
+                       class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 transition whitespace-nowrap">
+                        Reset
+                    </a>
+                @endif
+            </div>
+        </form>
+    </div>
 
     <table class="table-auto w-full mt-5 border">
 

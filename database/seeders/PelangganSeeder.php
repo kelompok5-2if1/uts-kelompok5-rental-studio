@@ -9,25 +9,37 @@ class PelangganSeeder extends Seeder
 {
     public function run(): void
     {
-        Pelanggan::create([
-            'nama' => 'Rifki Ramdhani',
-            'email' => 'rifki@gmail.com',
-            'alamat' => 'Bandung',
-            'no_hp' => '081234567890'
-        ]);
-
-        Pelanggan::create([
-            'nama' => 'Dzakwan Alif',
-            'email' => 'dzakwan@gmail.com',
-            'alamat' => 'Cimahi',
-            'no_hp' => '081298765432'
-        ]);
-
-        Pelanggan::create([
-            'nama' => 'Raka Mulfaidzy',
-            'email' => 'raka@gmail.com',
-            'alamat' => 'Garut',
-            'no_hp' => '082211223344'
+        Pelanggan::insert([
+            [
+                'nama' => 'Mohammad Rifki Ramdhani Waskito',
+                'email' => 'rifki@gmail.com',
+                'no_hp' => '081234567890',
+                'alamat' => 'Bandung'
+            ],
+            [
+                'nama' => 'Jemima',
+                'email' => 'jemima@gmail.com',
+                'no_hp' => '082345678901',
+                'alamat' => 'Jakarta'
+            ],
+            [
+                'nama' => 'Andi Saputra',
+                'email' => 'andi@gmail.com',
+                'no_hp' => '083456789012',
+                'alamat' => 'Bekasi'
+            ],
+            [
+                'nama' => 'Budi Santoso',
+                'email' => 'budi@gmail.com',
+                'no_hp' => '084567890123',
+                'alamat' => 'Bogor'
+            ],
+            [
+                'nama' => 'Siti Nurhaliza',
+                'email' => 'siti@gmail.com',
+                'no_hp' => '085678901234',
+                'alamat' => 'Depok'
+            ],
         ]);
     }
 }

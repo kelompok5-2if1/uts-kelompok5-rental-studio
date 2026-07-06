@@ -20,6 +20,7 @@ use App\Models\BookingStudio;
 use App\Models\RentalAlat;
 use App\Models\Pembayaran;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -177,6 +178,16 @@ Route::middleware('auth')->group(function () {
         'laporan-rental',
         LaporanRentalController::class
     );
+
+    Route::get(
+    '/laporan-rental-export-pdf',
+    [LaporanRentalController::class, 'exportPdf']
+    )->name('laporan-rental.export-pdf');
+
+    Route::get(
+    'laporan-rental/export/excel',
+    [LaporanRentalController::class,'exportExcel']
+    )->name('laporan-rental.export.excel');
 });
 
 require __DIR__.'/auth.php';

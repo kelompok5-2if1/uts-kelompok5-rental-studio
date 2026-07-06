@@ -13,6 +13,10 @@
         Tambah Data
 
     </a>
+    <a href="{{ route('laporan-rental.export-pdf') }}"
+       class="bg-red-500 text-white px-4 py-2 rounded">
+        Export PDF
+    </a>
     
     <form action="{{ route('laporan-rental.index') }}" method="GET" class="w-full md:w-auto">
         <div class="flex gap-2">

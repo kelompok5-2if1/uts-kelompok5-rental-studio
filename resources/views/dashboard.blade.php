@@ -1,4 +1,5 @@
 <x-app-layout>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <x-slot name="header">
         <h2 class="font-semibold text-2xl text-gray-800 leading-tight">
             Dashboard
@@ -333,6 +334,124 @@
                     Login sebagai: <strong>{{ Auth::user()->name }}</strong>
                 </p>
             </div>
+
+            <!-- Statistik Sistem (Chart) -->
+            <div class="bg-white p-6 rounded-xl shadow mt-8">
+                <h2 class="text-xl font-bold mb-4">
+                    Statistik Sistem
+                </h2>
+                <canvas id="dashboardChart"></canvas>
+            </div>
+
+            <script>
+            const ctx =
+                document.getElementById(
+                    'dashboardChart'
+                );
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        'Pelanggan',
+                        'Studio',
+                        'Alat',
+                        'Booking',
+                        'Rental'
+                    ],
+                    datasets: [{
+                        label: 'Jumlah Data',
+                        data: [
+                            {{ $totalPelanggan }},
+                            {{ $totalStudio }},
+                            {{ $totalAlat }},
+                            {{ $totalBooking }},
+                            {{ $totalRental }}
+                        ],
+                        backgroundColor: [
+                            '#3b82f6',
+                            '#10b981',
+                            '#f59e0b',
+                            '#ef4444',
+                            '#8b5cf6'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            </script>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+
+                <div class="bg-white p-6 rounded-xl shadow">
+                    <h3 class="text-lg font-bold mb-4">
+                        Grafik Booking Studio
+                    </h3>
+
+                    <canvas id="bookingChart"></canvas>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow">
+                    <h3 class="text-lg font-bold mb-4">
+                        Grafik Rental Alat
+                    </h3>
+
+                    <canvas id="rentalChart"></canvas>
+            </div>
+
+            </div>
+
+            <script>
+const bookingLabel = @json(
+    $bookingChart->pluck('bulan')
+);
+
+const bookingData = @json(
+    $bookingChart->pluck('total')
+);
+
+new Chart(
+    document.getElementById('bookingChart'),
+    {
+        type: 'bar',
+        data: {
+            labels: bookingLabel,
+            datasets: [{
+                label: 'Booking',
+                data: bookingData
+            }]
+        }
+    }
+);
+
+const rentalLabel = @json(
+    $rentalChart->pluck('bulan')
+);
+
+const rentalData = @json(
+    $rentalChart->pluck('total')
+);
+
+new Chart(
+    document.getElementById('rentalChart'),
+    {
+        type: 'line',
+        data: {
+            labels: rentalLabel,
+            datasets: [{
+                label: 'Rental',
+                data: rentalData
+            }]
+        }
+    }
+);
+</script>
 
         </div>
     </div>

@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\LaporanRental;
 use App\Http\Requests\StoreLaporanRentalRequest;
 use App\Http\Requests\UpdateLaporanRentalRequest;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LaporanRentalExport;
 
 class LaporanRentalController extends Controller
 {
@@ -57,5 +60,27 @@ class LaporanRentalController extends Controller
         $laporan->delete();
 
         return redirect('/laporan-rental');
+    }
+
+    public function exportPdf()
+    {
+        $laporan = LaporanRental::all();
+
+        $pdf = Pdf::loadView(
+            'laporan-rental.pdf',
+            compact('laporan')
+        );
+
+        return $pdf->download(
+            'laporan-rental.pdf'
+        );
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(
+            new LaporanRentalExport,
+            'laporan-rental.xlsx'
+        );
     }
 }

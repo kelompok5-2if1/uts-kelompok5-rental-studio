@@ -1,31 +1,22 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <title>{{ config('app.name', 'Laravel') }}</title>
-
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap"
           rel="stylesheet" />
-
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-
 <body class="font-sans antialiased">
-
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-
         @include('layouts.navigation')
-
         <!-- Header -->
         @isset($header)
             <header class="bg-white dark:bg-gray-800 shadow">
@@ -34,14 +25,11 @@
                 </div>
             </header>
         @endisset
-
         <!-- Content -->
         <main>
             {{ $slot }}
         </main>
-
     </div>
-
     {{-- SweetAlert Success --}}
     @if(session('success'))
     <script>
@@ -54,7 +42,6 @@
         });
     </script>
     @endif
-
     {{-- SweetAlert Error --}}
     @if(session('error'))
     <script>
@@ -65,7 +52,6 @@
         });
     </script>
     @endif
-
     {{-- SweetAlert Warning --}}
     @if(session('warning'))
     <script>
@@ -76,7 +62,6 @@
         });
     </script>
     @endif
-
     {{-- Validation Error --}}
     @if($errors->any())
     <script>
@@ -91,6 +76,54 @@
         });
     </script>
     @endif
+    {{-- SweetAlert Delete Confirmation --}}
+    <script>
+        function confirmDelete(event) {
+            event.preventDefault();
 
+            const form = event.target.closest('form');
+
+            Swal.fire({
+                title: 'Yakin ingin menghapus?',
+                text: 'Data yang sudah dihapus tidak dapat dikembalikan.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    form.submit();
+
+                }
+            });
+
+            return false;
+        }
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        document.querySelectorAll('form').forEach(form => {
+
+            const method = form.querySelector('input[name="_method"]');
+
+            if (method && method.value === 'DELETE') {
+
+                const btn = form.querySelector('button[type="submit"]');
+
+                if (btn) {
+                    btn.setAttribute('onclick', 'confirmDelete(event)');
+                }
+
+            }
+
+        });
+
+    });
+    </script>
 </body>
 </html>

@@ -387,71 +387,78 @@
             });
             </script>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-
-                <div class="bg-white p-6 rounded-xl shadow">
+            {{-- Charts --}}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 mt-8">
+                {{-- Booking Chart --}}
+                <div class="bg-white rounded-xl shadow p-6">
                     <h3 class="text-lg font-bold mb-4">
-                        Grafik Booking Studio
+                        Grafik Booking Studio per Bulan
                     </h3>
-
                     <canvas id="bookingChart"></canvas>
                 </div>
-
-                <div class="bg-white p-6 rounded-xl shadow">
+                {{-- Rental Chart --}}
+                <div class="bg-white rounded-xl shadow p-6">
                     <h3 class="text-lg font-bold mb-4">
-                        Grafik Rental Alat
+                        Grafik Rental Alat per Bulan
                     </h3>
-
                     <canvas id="rentalChart"></canvas>
-            </div>
-
+                </div>
             </div>
 
             <script>
-const bookingLabel = @json(
-    $bookingChart->pluck('bulan')
-);
-
-const bookingData = @json(
-    $bookingChart->pluck('total')
-);
-
-new Chart(
-    document.getElementById('bookingChart'),
-    {
-        type: 'bar',
-        data: {
-            labels: bookingLabel,
-            datasets: [{
-                label: 'Booking',
-                data: bookingData
-            }]
-        }
-    }
-);
-
-const rentalLabel = @json(
-    $rentalChart->pluck('bulan')
-);
-
-const rentalData = @json(
-    $rentalChart->pluck('total')
-);
-
-new Chart(
-    document.getElementById('rentalChart'),
-    {
-        type: 'line',
-        data: {
-            labels: rentalLabel,
-            datasets: [{
-                label: 'Rental',
-                data: rentalData
-            }]
-        }
-    }
-);
-</script>
+            const bookingCtx =
+                document.getElementById('bookingChart');
+            new Chart(bookingCtx, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        @foreach($bookingChart as $item)
+                            '{{ $item->bulan }}',
+                        @endforeach
+                    ],
+                    datasets: [{
+                        label: 'Booking',
+                        data: [
+                            @foreach($bookingChart as $item)
+                                {{ $item->total }},
+                            @endforeach
+                        ],
+                        backgroundColor: [
+                            '#3B82F6'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+            const rentalCtx =
+                document.getElementById('rentalChart');
+            new Chart(rentalCtx, {
+                type: 'line',
+                data: {
+                    labels: [
+                        @foreach($rentalChart as $item)
+                            '{{ $item->bulan }}',
+                        @endforeach
+                    ],
+                    datasets: [{
+                        label: 'Rental',
+                        data: [
+                            @foreach($rentalChart as $item)
+                                {{ $item->total }},
+                            @endforeach
+                        ],
+                        borderColor: '#EF4444',
+                        fill: false,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+            </script>
 
         </div>
     </div>

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\StudioController;
@@ -37,6 +38,24 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
 
+    // booking per bulan
+    $bookingChart = BookingStudio::select(
+            DB::raw('MONTH(created_at) as bulan'),
+            DB::raw('COUNT(*) as total')
+        )
+        ->groupBy('bulan')
+        ->orderBy('bulan')
+        ->get();
+
+    // rental per bulan
+    $rentalChart = RentalAlat::select(
+            DB::raw('MONTH(created_at) as bulan'),
+            DB::raw('COUNT(*) as total')
+        )
+        ->groupBy('bulan')
+        ->orderBy('bulan')
+        ->get();
+
     return view('dashboard', [
 
         // statistik utama
@@ -60,6 +79,10 @@ Route::get('/dashboard', function () {
                             ->latest()
                             ->take(5)
                             ->get(),
+
+        // chart per bulan
+        'bookingChart' => $bookingChart,
+        'rentalChart'  => $rentalChart,
 
     ]);
 

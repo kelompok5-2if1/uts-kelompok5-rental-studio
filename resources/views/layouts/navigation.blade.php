@@ -1,4 +1,19 @@
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 shadow">
+    @php
+        $userRole = strtoupper(Auth::user()->role ?? 'admin');
+        $menuItems = [
+            ['label' => 'Dashboard', 'href' => route('dashboard'), 'roles' => ['admin', 'kasir', 'owner']],
+            ['label' => 'Pelanggan', 'href' => url('/pelanggan'), 'roles' => ['admin', 'owner']],
+            ['label' => 'Kategori', 'href' => url('/kategori'), 'roles' => ['admin', 'owner']],
+            ['label' => 'Studio', 'href' => url('/studio'), 'roles' => ['admin', 'owner']],
+            ['label' => 'Alat Band', 'href' => url('/alat-band'), 'roles' => ['admin', 'owner']],
+            ['label' => 'Booking Studio', 'href' => url('/booking-studio'), 'roles' => ['admin', 'owner', 'kasir']],
+            ['label' => 'Rental Alat', 'href' => url('/rental-alat'), 'roles' => ['admin', 'owner', 'kasir']],
+            ['label' => 'Detail Rental', 'href' => url('/detail-rental'), 'roles' => ['admin', 'owner', 'kasir']],
+            ['label' => 'Pembayaran', 'href' => url('/pembayaran'), 'roles' => ['admin', 'owner', 'kasir']],
+            ['label' => 'Laporan', 'href' => url('/laporan-rental'), 'roles' => ['admin', 'owner']],
+        ];
+    @endphp
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -21,45 +36,13 @@
                 <!-- DESKTOP MENU -->
                 <div class="hidden lg:flex lg:items-center lg:space-x-6 lg:ml-10 text-sm font-medium">
 
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        Dashboard
-                    </x-nav-link>
-
-                    <x-nav-link :href="url('/pelanggan')">
-                        Pelanggan
-                    </x-nav-link>
-
-                    <x-nav-link :href="url('/kategori')">
-                        Kategori
-                    </x-nav-link>
-
-                    <x-nav-link :href="url('/studio')">
-                        Studio
-                    </x-nav-link>
-
-                    <x-nav-link :href="url('/alat-band')">
-                        Alat Band
-                    </x-nav-link>
-
-                    <x-nav-link :href="url('/booking-studio')">
-                        Booking Studio
-                    </x-nav-link>
-
-                    <x-nav-link :href="url('/rental-alat')">
-                        Rental Alat
-                    </x-nav-link>
-
-                    <x-nav-link :href="url('/detail-rental')">
-                        Detail Rental
-                    </x-nav-link>
-
-                    <x-nav-link :href="url('/pembayaran')">
-                        Pembayaran
-                    </x-nav-link>
-
-                    <x-nav-link :href="url('/laporan-rental')">
-                        Laporan
-                    </x-nav-link>
+                    @foreach($menuItems as $item)
+                        @if(in_array(strtolower(Auth::user()->role ?? 'admin'), $item['roles'], true))
+                            <x-nav-link :href="$item['href']" :active="request()->url() === $item['href']">
+                                {{ $item['label'] }}
+                            </x-nav-link>
+                        @endif
+                    @endforeach
 
                 </div>
 
@@ -73,6 +56,10 @@
                     <x-slot name="trigger">
 
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm rounded-md text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 hover:text-gray-800 dark:hover:text-white focus:outline-none transition">
+
+                            <span class="mr-3 inline-flex items-center rounded-full bg-blue-600 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-white">
+                                {{ $userRole }}
+                            </span>
 
                             <div>{{ Auth::user()->name }}</div>
 
@@ -160,45 +147,13 @@
 
         <div class="px-3 py-3 space-y-2">
 
-            <x-responsive-nav-link :href="route('dashboard')">
-                Dashboard
-            </x-responsive-nav-link>
-
-            <x-responsive-nav-link :href="url('/pelanggan')">
-                Pelanggan
-            </x-responsive-nav-link>
-
-            <x-responsive-nav-link :href="url('/kategori')">
-                Kategori
-            </x-responsive-nav-link>
-
-            <x-responsive-nav-link :href="url('/studio')">
-                Studio
-            </x-responsive-nav-link>
-
-            <x-responsive-nav-link :href="url('/alat-band')">
-                Alat Band
-            </x-responsive-nav-link>
-
-            <x-responsive-nav-link :href="url('/booking-studio')">
-                Booking Studio
-            </x-responsive-nav-link>
-
-            <x-responsive-nav-link :href="url('/rental-alat')">
-                Rental Alat
-            </x-responsive-nav-link>
-
-            <x-responsive-nav-link :href="url('/detail-rental')">
-                Detail Rental
-            </x-responsive-nav-link>
-
-            <x-responsive-nav-link :href="url('/pembayaran')">
-                Pembayaran
-            </x-responsive-nav-link>
-
-            <x-responsive-nav-link :href="url('/laporan-rental')">
-                Laporan Rental
-            </x-responsive-nav-link>
+            @foreach($menuItems as $item)
+                @if(in_array(strtolower(Auth::user()->role ?? 'admin'), $item['roles'], true))
+                    <x-responsive-nav-link :href="$item['href']">
+                        {{ $item['label'] }}
+                    </x-responsive-nav-link>
+                @endif
+            @endforeach
 
         </div>
 

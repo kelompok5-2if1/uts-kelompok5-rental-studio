@@ -27,11 +27,15 @@ class LaporanRentalController extends Controller
 
     public function create()
     {
+        $this->authorizeWriteAccess('laporan-rental');
+
         return view('laporan-rental.create');
     }
 
     public function store(StoreLaporanRentalRequest $request)
     {
+        $this->authorizeWriteAccess('laporan-rental');
+
         LaporanRental::create($request->validated());
 
         return redirect('/laporan-rental');
@@ -39,6 +43,8 @@ class LaporanRentalController extends Controller
 
     public function edit($id)
     {
+        $this->authorizeWriteAccess('laporan-rental');
+
         $laporan = LaporanRental::findOrFail($id);
 
         return view('laporan-rental.edit', compact('laporan'));
@@ -46,6 +52,8 @@ class LaporanRentalController extends Controller
 
     public function update(UpdateLaporanRentalRequest $request, $id)
     {
+        $this->authorizeWriteAccess('laporan-rental');
+
         $laporan = LaporanRental::findOrFail($id);
 
         $laporan->update($request->validated());
@@ -55,6 +63,8 @@ class LaporanRentalController extends Controller
 
     public function destroy($id)
     {
+        $this->authorizeWriteAccess('laporan-rental');
+
         $laporan = LaporanRental::findOrFail($id);
 
         $laporan->delete();

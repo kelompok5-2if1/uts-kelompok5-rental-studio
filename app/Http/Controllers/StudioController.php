@@ -46,11 +46,15 @@ class StudioController extends Controller
 
     public function create()
     {
+        $this->authorizeWriteAccess('studio');
+
         return view('studio.create');
     }
 
     public function store(StoreStudioRequest $request)
     {
+        $this->authorizeWriteAccess('studio');
+
         $data = $request->validated();
 
         if ($request->hasFile('foto')) {
@@ -64,6 +68,8 @@ class StudioController extends Controller
 
     public function edit($id)
     {
+        $this->authorizeWriteAccess('studio');
+
         $studio = Studio::findOrFail($id);
 
         return view('studio.edit', compact('studio'));
@@ -71,6 +77,8 @@ class StudioController extends Controller
 
     public function update(UpdateStudioRequest $request, $id)
     {
+        $this->authorizeWriteAccess('studio');
+
         $studio = Studio::findOrFail($id);
 
         $data = $request->validated();
@@ -89,6 +97,8 @@ class StudioController extends Controller
 
     public function destroy($id)
     {
+        $this->authorizeWriteAccess('studio');
+
         $studio = Studio::findOrFail($id);
 
         if ($studio->foto) {

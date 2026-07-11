@@ -37,6 +37,8 @@ class RentalAlatController extends Controller
 
     public function create()
     {
+        $this->authorizeWriteAccess('rental-alat');
+
         $pelanggan = Pelanggan::all();
 
         $alatBand = AlatBand::all();
@@ -49,6 +51,8 @@ class RentalAlatController extends Controller
 
     public function store(StoreRentalAlatRequest $request)
     {
+        $this->authorizeWriteAccess('rental-alat');
+
         RentalAlat::create($request->validated());
 
         return redirect('/rental-alat');
@@ -56,6 +60,8 @@ class RentalAlatController extends Controller
 
     public function edit($id)
     {
+        $this->authorizeWriteAccess('rental-alat');
+
         $rentalAlat = RentalAlat::findOrFail($id);
 
         $pelanggan = Pelanggan::all();
@@ -71,6 +77,8 @@ class RentalAlatController extends Controller
 
     public function update(UpdateRentalAlatRequest $request, $id)
     {
+        $this->authorizeWriteAccess('rental-alat');
+
         $rentalAlat = RentalAlat::findOrFail($id);
 
         $rentalAlat->update($request->validated());
@@ -80,6 +88,8 @@ class RentalAlatController extends Controller
 
     public function destroy($id)
     {
+        $this->authorizeWriteAccess('rental-alat');
+
         $rentalAlat = RentalAlat::findOrFail($id);
 
         $rentalAlat->delete();

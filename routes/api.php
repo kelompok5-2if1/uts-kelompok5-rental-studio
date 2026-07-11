@@ -12,19 +12,21 @@ use App\Http\Controllers\Api\DetailRentalController;
 use App\Http\Controllers\Api\PembayaranController;
 use App\Http\Controllers\Api\LaporanRentalController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::middleware('auth')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 
-// API Resource Routes
-Route::prefix('v1')->group(function () {
-    Route::apiResource('pelanggan', PelangganController::class);
-    Route::apiResource('kategori', KategoriController::class);
-    Route::apiResource('studio', StudioController::class);
-    Route::apiResource('alat-band', AlatBandController::class);
-    Route::apiResource('booking-studio', BookingStudioController::class);
-    Route::apiResource('rental-alat', RentalAlatController::class);
-    Route::apiResource('detail-rental', DetailRentalController::class);
-    Route::apiResource('pembayaran', PembayaranController::class);
-    Route::apiResource('laporan-rental', LaporanRentalController::class);
+    // API Resource Routes
+    Route::prefix('v1')->group(function () {
+        Route::apiResource('pelanggan', PelangganController::class);
+        Route::apiResource('kategori', KategoriController::class);
+        Route::apiResource('studio', StudioController::class);
+        Route::apiResource('alat-band', AlatBandController::class);
+        Route::apiResource('booking-studio', BookingStudioController::class);
+        Route::apiResource('rental-alat', RentalAlatController::class);
+        Route::apiResource('detail-rental', DetailRentalController::class);
+        Route::apiResource('pembayaran', PembayaranController::class);
+        Route::apiResource('laporan-rental', LaporanRentalController::class);
+    });
 });

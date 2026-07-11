@@ -27,7 +27,7 @@ class StudioController extends Controller
         }
 
         $studio = Studio::create($data);
-        return new StudioResource($studio);
+        return (new StudioResource($studio))->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function show(Studio $studio)
@@ -56,6 +56,6 @@ class StudioController extends Controller
             Storage::disk('public')->delete($studio->foto);
         }
         $studio->delete();
-        return response()->json(['message' => 'Studio deleted successfully'], Response::HTTP_OK);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

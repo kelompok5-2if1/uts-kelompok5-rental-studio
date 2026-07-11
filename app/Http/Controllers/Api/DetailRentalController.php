@@ -20,7 +20,7 @@ class DetailRentalController extends Controller
     public function store(StoreDetailRentalRequest $request)
     {
         $detailRental = DetailRental::create($request->validated());
-        return new DetailRentalResource($detailRental->load(['rentalAlat', 'alatBand']));
+        return (new DetailRentalResource($detailRental->load(['rentalAlat', 'alatBand'])))->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function show(DetailRental $detailRental)
@@ -37,6 +37,6 @@ class DetailRentalController extends Controller
     public function destroy(DetailRental $detailRental)
     {
         $detailRental->delete();
-        return response()->json(['message' => 'Detail Rental deleted successfully'], Response::HTTP_OK);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

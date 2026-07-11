@@ -20,7 +20,7 @@ class BookingStudioController extends Controller
     public function store(StoreBookingStudioRequest $request)
     {
         $bookingStudio = BookingStudio::create($request->validated());
-        return new BookingStudioResource($bookingStudio->load(['pelanggan', 'studio']));
+        return (new BookingStudioResource($bookingStudio->load(['pelanggan', 'studio'])))->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function show(BookingStudio $bookingStudio)
@@ -37,6 +37,6 @@ class BookingStudioController extends Controller
     public function destroy(BookingStudio $bookingStudio)
     {
         $bookingStudio->delete();
-        return response()->json(['message' => 'Booking Studio deleted successfully'], Response::HTTP_OK);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

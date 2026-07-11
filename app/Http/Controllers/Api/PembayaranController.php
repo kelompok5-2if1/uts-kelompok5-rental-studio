@@ -20,7 +20,7 @@ class PembayaranController extends Controller
     public function store(StorePembayaranRequest $request)
     {
         $pembayaran = Pembayaran::create($request->validated());
-        return new PembayaranResource($pembayaran->load('rentalAlat'));
+        return (new PembayaranResource($pembayaran->load('rentalAlat')))->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function show(Pembayaran $pembayaran)
@@ -37,6 +37,6 @@ class PembayaranController extends Controller
     public function destroy(Pembayaran $pembayaran)
     {
         $pembayaran->delete();
-        return response()->json(['message' => 'Pembayaran deleted successfully'], Response::HTTP_OK);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

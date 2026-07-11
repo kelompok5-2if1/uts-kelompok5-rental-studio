@@ -81,8 +81,8 @@
                               class="inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit"
-                                    onclick="return confirm('Yakin ingin menghapus kategori ini?')"
+                            <button type="button"
+                                    onclick="event.preventDefault(); confirmDelete(event);"
                                     class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition">
                                 Hapus
                             </button>

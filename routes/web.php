@@ -38,8 +38,12 @@ Route::get('/', function () {
 */
 
 Route::get('/dashboard', function () {
+    $monthExpression = DB::connection()->getDriverName() === 'sqlite'
+        ? "CAST(strftime('%m', created_at) AS INTEGER)"
+        : 'MONTH(created_at)';
+
     $bookingChart = BookingStudio::select(
-            DB::raw("MONTH(created_at) as bulan"),
+            DB::raw("{$monthExpression} as bulan"),
             DB::raw('COUNT(*) as total')
         )
         ->groupBy('bulan')
@@ -47,7 +51,7 @@ Route::get('/dashboard', function () {
         ->get();
 
     $rentalChart = RentalAlat::select(
-            DB::raw("MONTH(created_at) as bulan"),
+            DB::raw("{$monthExpression} as bulan"),
             DB::raw('COUNT(*) as total')
         )
         ->groupBy('bulan')

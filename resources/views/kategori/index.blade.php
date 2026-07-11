@@ -11,6 +11,13 @@
            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition whitespace-nowrap">
             Tambah Kategori
         </a>
+        <a href="{{ route('kategori.export.excel') }}"
+            class="bg-green-600 text-white px-4 py-2 rounded">
+
+            Export Excel
+
+        </a>
+
 
         <form action="{{ route('kategori.index') }}" method="GET" class="w-full md:w-auto">
             <div class="flex flex-col md:flex-row gap-2">

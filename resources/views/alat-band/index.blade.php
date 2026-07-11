@@ -19,6 +19,13 @@
 
         </a>
 
+        <a href="{{ route('alat-band.export.excel') }}"
+            class="bg-green-600 text-white px-4 py-2 rounded">
+
+            Export Excel
+
+        </a>
+
         <form action="{{ route('alat-band.index') }}"
               method="GET"
               class="flex flex-col md:flex-row gap-2">

@@ -7,6 +7,8 @@ use App\Models\Pembayaran;
 use App\Models\RentalAlat;
 use App\Http\Requests\StorePembayaranRequest;
 use App\Http\Requests\UpdatePembayaranRequest;
+use App\Exports\PembayaranExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PembayaranController extends Controller
 {
@@ -71,4 +73,13 @@ class PembayaranController extends Controller
 
         return redirect('/pembayaran');
     }
+
+    public function exportExcel()
+    {
+        return Excel::download(
+            new PembayaranExport,
+            'pembayaran.xlsx'
+        );
+    }
+    
 }

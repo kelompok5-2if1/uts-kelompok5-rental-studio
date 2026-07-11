@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StoreAlatBandRequest;
 use App\Http\Requests\UpdateAlatBandRequest;
+use App\Exports\AlatBandExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AlatBandController extends Controller
 {
@@ -166,5 +168,13 @@ class AlatBandController extends Controller
                 'success',
                 'Alat band berhasil dihapus'
             );
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(
+            new AlatBandExport,
+            'alat-band.xlsx'
+        );
     }
 }

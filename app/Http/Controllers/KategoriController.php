@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Kategori;
 use App\Http\Requests\StoreKategoriRequest;
 use App\Http\Requests\UpdateKategoriRequest;
+use App\Exports\KategoriExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class KategoriController extends Controller
 {
@@ -69,5 +71,13 @@ class KategoriController extends Controller
         $kategori->delete();
 
         return redirect('/kategori');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(
+            new KategoriExport,
+            'kategori.xlsx'
+        );
     }
 }

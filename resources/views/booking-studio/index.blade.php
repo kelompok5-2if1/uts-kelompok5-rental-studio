@@ -13,6 +13,12 @@
             Tambah Booking
 
         </a>
+        <a href="{{ route('booking-studio.export.excel') }}"
+            class="bg-green-600 text-white px-4 py-2 rounded">
+
+            Export Excel
+
+        </a>
         
         <form action="{{ route('booking-studio.index') }}" method="GET" class="w-full md:w-auto">
             <div class="flex flex-col md:flex-row gap-2">
@@ -119,7 +125,7 @@
                             @method('DELETE')
 
                             <button type="submit"
-                                    onclick="return confirm('Yakin ingin menghapus booking ini?')"
+                                    onclick="event.preventDefault(); confirmDelete(event);"
                                     class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition">
 
                                 Hapus
@@ -155,10 +161,5 @@
 
 </x-app-layout>
 
-        </tbody>
+        
 
-    </table>
-
-</div>
-
-</x-app-layout>

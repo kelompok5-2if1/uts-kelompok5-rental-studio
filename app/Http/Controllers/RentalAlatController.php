@@ -8,6 +8,8 @@ use App\Models\Pelanggan;
 use App\Models\AlatBand;
 use App\Http\Requests\StoreRentalAlatRequest;
 use App\Http\Requests\UpdateRentalAlatRequest;
+use App\Exports\RentalAlatExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RentalAlatController extends Controller
 {
@@ -83,5 +85,13 @@ class RentalAlatController extends Controller
         $rentalAlat->delete();
 
         return redirect('/rental-alat');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(
+            new RentalAlatExport,
+            'rental-alat.xlsx'
+        );
     }
 }

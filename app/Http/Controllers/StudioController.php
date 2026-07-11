@@ -7,6 +7,9 @@ use App\Models\Studio;
 use App\Http\Requests\StoreStudioRequest;
 use App\Http\Requests\UpdateStudioRequest;
 use Illuminate\Support\Facades\Storage;
+use App\Exports\StudioExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class StudioController extends Controller
 {
@@ -95,5 +98,14 @@ class StudioController extends Controller
         $studio->delete();
 
         return redirect('/studio');
+    }
+
+
+    public function exportExcel()
+    {
+        return Excel::download(
+            new StudioExport,
+            'studio.xlsx'
+        );
     }
 }

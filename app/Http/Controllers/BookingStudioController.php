@@ -8,6 +8,8 @@ use App\Models\Pelanggan;
 use App\Models\Studio;
 use App\Http\Requests\StoreBookingStudioRequest;
 use App\Http\Requests\UpdateBookingStudioRequest;
+use App\Exports\BookingStudioExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BookingStudioController extends Controller
 {
@@ -83,5 +85,13 @@ class BookingStudioController extends Controller
         $bookingStudio->delete();
 
         return redirect('/booking-studio');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(
+            new BookingStudioExport,
+            'booking-studio.xlsx'
+        );
     }
 }

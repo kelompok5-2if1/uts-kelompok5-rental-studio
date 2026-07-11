@@ -11,6 +11,12 @@
            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition whitespace-nowrap">
             Tambah Studio
         </a>
+         <a href="{{ route('studio.export.excel') }}"
+            class="bg-green-600 text-white px-4 py-2 rounded">
+
+            Export Excel
+
+        </a>
 
         <form action="{{ route('studio.index') }}" method="GET" class="w-full md:w-auto">
             <div class="flex flex-col md:flex-row gap-2">
@@ -99,7 +105,7 @@
                             @csrf
                             @method('DELETE')
                             <button type="submit"
-                                    onclick="return confirm('Yakin ingin menghapus studio ini?')"
+                                    onclick="event.preventDefault(); confirmDelete(event);"
                                     class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition">
                                 Hapus
                             </button>

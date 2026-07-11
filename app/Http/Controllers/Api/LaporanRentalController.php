@@ -20,7 +20,7 @@ class LaporanRentalController extends Controller
     public function store(StoreLaporanRentalRequest $request)
     {
         $laporan = LaporanRental::create($request->validated());
-        return new LaporanRentalResource($laporan);
+        return (new LaporanRentalResource($laporan))->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function show(LaporanRental $laporan)
@@ -37,6 +37,6 @@ class LaporanRentalController extends Controller
     public function destroy(LaporanRental $laporan)
     {
         $laporan->delete();
-        return response()->json(['message' => 'Laporan Rental deleted successfully'], Response::HTTP_OK);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

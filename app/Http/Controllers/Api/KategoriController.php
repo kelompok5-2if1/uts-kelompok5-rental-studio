@@ -20,7 +20,7 @@ class KategoriController extends Controller
     public function store(StoreKategoriRequest $request)
     {
         $kategori = Kategori::create($request->validated());
-        return new KategoriResource($kategori);
+        return (new KategoriResource($kategori))->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function show(Kategori $kategori)
@@ -37,6 +37,6 @@ class KategoriController extends Controller
     public function destroy(Kategori $kategori)
     {
         $kategori->delete();
-        return response()->json(['message' => 'Kategori deleted successfully'], Response::HTTP_OK);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

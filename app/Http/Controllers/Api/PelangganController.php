@@ -20,7 +20,7 @@ class PelangganController extends Controller
     public function store(StorePelangganRequest $request)
     {
         $pelanggan = Pelanggan::create($request->validated());
-        return new PelangganResource($pelanggan);
+        return (new PelangganResource($pelanggan))->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function show(Pelanggan $pelanggan)
@@ -37,6 +37,6 @@ class PelangganController extends Controller
     public function destroy(Pelanggan $pelanggan)
     {
         $pelanggan->delete();
-        return response()->json(['message' => 'Pelanggan deleted successfully'], Response::HTTP_OK);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

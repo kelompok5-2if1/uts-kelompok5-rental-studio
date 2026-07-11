@@ -27,7 +27,7 @@ class AlatBandController extends Controller
         }
 
         $alatBand = AlatBand::create($data);
-        return new AlatBandResource($alatBand->load('kategori'));
+        return (new AlatBandResource($alatBand->load('kategori')))->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function show(AlatBand $alatBand)
@@ -56,6 +56,6 @@ class AlatBandController extends Controller
             Storage::disk('public')->delete($alatBand->foto);
         }
         $alatBand->delete();
-        return response()->json(['message' => 'Alat Band deleted successfully'], Response::HTTP_OK);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

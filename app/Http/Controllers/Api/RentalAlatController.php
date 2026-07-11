@@ -20,7 +20,7 @@ class RentalAlatController extends Controller
     public function store(StoreRentalAlatRequest $request)
     {
         $rentalAlat = RentalAlat::create($request->validated());
-        return new RentalAlatResource($rentalAlat->load(['pelanggan', 'alatBand']));
+        return (new RentalAlatResource($rentalAlat->load(['pelanggan', 'alatBand'])))->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function show(RentalAlat $rentalAlat)
@@ -37,6 +37,6 @@ class RentalAlatController extends Controller
     public function destroy(RentalAlat $rentalAlat)
     {
         $rentalAlat->delete();
-        return response()->json(['message' => 'Rental Alat deleted successfully'], Response::HTTP_OK);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

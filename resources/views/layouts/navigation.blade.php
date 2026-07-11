@@ -1,18 +1,23 @@
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 shadow">
     @php
-        $userRole = strtoupper(Auth::user()->role ?? 'admin');
-        $menuItems = [
-            ['label' => 'Dashboard', 'href' => route('dashboard'), 'roles' => ['admin', 'kasir', 'owner']],
-            ['label' => 'Pelanggan', 'href' => url('/pelanggan'), 'roles' => ['admin', 'owner']],
-            ['label' => 'Kategori', 'href' => url('/kategori'), 'roles' => ['admin', 'owner']],
-            ['label' => 'Studio', 'href' => url('/studio'), 'roles' => ['admin', 'owner']],
-            ['label' => 'Alat Band', 'href' => url('/alat-band'), 'roles' => ['admin', 'owner']],
-            ['label' => 'Booking Studio', 'href' => url('/booking-studio'), 'roles' => ['admin', 'owner', 'kasir']],
-            ['label' => 'Rental Alat', 'href' => url('/rental-alat'), 'roles' => ['admin', 'owner', 'kasir']],
-            ['label' => 'Detail Rental', 'href' => url('/detail-rental'), 'roles' => ['admin', 'owner', 'kasir']],
-            ['label' => 'Pembayaran', 'href' => url('/pembayaran'), 'roles' => ['admin', 'owner', 'kasir']],
-            ['label' => 'Laporan', 'href' => url('/laporan-rental'), 'roles' => ['admin', 'owner']],
-        ];
+        $userRole = strtolower(Auth::user()->role ?? 'admin');
+        $menuItems = $userRole === 'kasir'
+            ? [
+                ['label' => 'Dashboard', 'href' => route('dashboard'), 'roles' => ['admin', 'kasir', 'owner']],
+                ['label' => 'Pembayaran', 'href' => url('/pembayaran'), 'roles' => ['admin', 'owner', 'kasir']],
+            ]
+            : [
+                ['label' => 'Dashboard', 'href' => route('dashboard'), 'roles' => ['admin', 'kasir', 'owner']],
+                ['label' => 'Pelanggan', 'href' => url('/pelanggan'), 'roles' => ['admin', 'owner']],
+                ['label' => 'Kategori', 'href' => url('/kategori'), 'roles' => ['admin', 'owner']],
+                ['label' => 'Studio', 'href' => url('/studio'), 'roles' => ['admin', 'owner']],
+                ['label' => 'Alat Band', 'href' => url('/alat-band'), 'roles' => ['admin', 'owner']],
+                ['label' => 'Booking Studio', 'href' => url('/booking-studio'), 'roles' => ['admin', 'owner', 'kasir']],
+                ['label' => 'Rental Alat', 'href' => url('/rental-alat'), 'roles' => ['admin', 'owner', 'kasir']],
+                ['label' => 'Detail Rental', 'href' => url('/detail-rental'), 'roles' => ['admin', 'owner', 'kasir']],
+                ['label' => 'Pembayaran', 'href' => url('/pembayaran'), 'roles' => ['admin', 'owner', 'kasir']],
+                ['label' => 'Laporan', 'href' => url('/laporan-rental'), 'roles' => ['admin', 'owner']],
+            ];
     @endphp
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,7 +42,7 @@
                 <div class="hidden lg:flex lg:items-center lg:space-x-6 lg:ml-10 text-sm font-medium">
 
                     @foreach($menuItems as $item)
-                        @if(in_array(strtolower(Auth::user()->role ?? 'admin'), $item['roles'], true))
+                        @if(in_array($userRole, $item['roles'], true))
                             <x-nav-link :href="$item['href']" :active="request()->url() === $item['href']">
                                 {{ $item['label'] }}
                             </x-nav-link>
@@ -58,7 +63,7 @@
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm rounded-md text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 hover:text-gray-800 dark:hover:text-white focus:outline-none transition">
 
                             <span class="mr-3 inline-flex items-center rounded-full bg-blue-600 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-white">
-                                {{ $userRole }}
+                                {{ strtoupper($userRole) }}
                             </span>
 
                             <div>{{ Auth::user()->name }}</div>

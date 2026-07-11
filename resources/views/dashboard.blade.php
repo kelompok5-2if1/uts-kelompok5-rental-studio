@@ -8,6 +8,11 @@
 
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-4 md:py-8">
         <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+            @php
+                $hour = now()->hour;
+                $greeting = $hour < 12 ? 'Selamat Pagi' : ($hour < 15 ? 'Selamat Siang' : ($hour < 18 ? 'Selamat Sore' : 'Selamat Malam'));
+                $userRole = strtolower(Auth::user()->role ?? 'admin');
+            @endphp
 
             <!-- Welcome Banner -->
             <div class="overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 via-blue-800 to-slate-900 text-white shadow-2xl shadow-blue-900/20 p-4 md:p-8 mb-6 md:mb-8">
@@ -17,7 +22,7 @@
                             <span class="mr-2">🎵</span> Sistem Informasi Rental Studio Musik
                         </div>
                         <h1 class="text-2xl md:text-4xl font-bold mb-2">
-                            Selamat Datang, {{ Auth::user()->name }}!
+                            {{ $greeting }}, {{ Auth::user()->name }}!
                         </h1>
                         <p class="text-blue-100 text-sm md:text-base">
                             Pantau operasional booking studio, rental alat, dan pendapatan secara real-time.
@@ -31,7 +36,6 @@
             </div>
 
             <!-- Statistics Cards -->
-            @php $userRole = strtolower(Auth::user()->role ?? 'admin'); @endphp
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
                 @if(in_array($userRole, ['admin', 'owner']))
                     <div class="rounded-2xl border border-blue-100 bg-white p-4 md:p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">

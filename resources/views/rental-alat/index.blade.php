@@ -13,6 +13,12 @@
             Tambah Rental
 
         </a>
+        <a href="{{ route('rental-alat.export.excel') }}"
+            class="bg-green-600 text-white px-4 py-2 rounded">
+
+            Export Excel
+
+        </a>
         
         <form action="{{ route('rental-alat.index') }}" method="GET" class="w-full md:w-auto">
             <div class="flex flex-col md:flex-row gap-2">
@@ -117,6 +123,7 @@
                         @method('DELETE')
 
                         <button type="submit"
+                                onclick="event.preventDefault(); confirmDelete(event);"
                                 class="bg-red-500 text-white px-3 py-1 rounded">
 
                             Hapus

@@ -8,6 +8,8 @@ use App\Models\RentalAlat;
 use App\Models\AlatBand;
 use App\Http\Requests\StoreDetailRentalRequest;
 use App\Http\Requests\UpdateDetailRentalRequest;
+use App\Exports\DetailRentalExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DetailRentalController extends Controller
 {
@@ -72,5 +74,13 @@ class DetailRentalController extends Controller
         $detailRental->delete();
 
         return redirect('/detail-rental');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(
+            new DetailRentalExport,
+            'detail-rental.xlsx'
+        );
     }
 }

@@ -188,6 +188,44 @@ Route::middleware('auth')->group(function () {
     'laporan-rental/export/excel',
     [LaporanRentalController::class,'exportExcel']
     )->name('laporan-rental.export.excel');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Export Excel (Tambahan Baru)
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/pelanggan/export/excel',
+        [PelangganController::class, 'exportExcel'])
+        ->name('pelanggan.export.excel');
+
+    Route::get('/studio/export/excel',
+        [StudioController::class, 'exportExcel'])
+        ->name('studio.export.excel');
+
+    Route::get('/alat-band/export/excel',
+        [AlatBandController::class, 'exportExcel'])
+        ->name('alat-band.export.excel');
+
+    Route::get('/booking-studio/export/excel',
+        [BookingStudioController::class, 'exportExcel'])
+        ->name('booking-studio.export.excel');
+
+    Route::get('/rental-alat/export/excel',
+        [RentalAlatController::class, 'exportExcel'])
+        ->name('rental-alat.export.excel');
+
+    Route::get('/pembayaran/export/excel',
+        [PembayaranController::class, 'exportExcel'])
+        ->name('pembayaran.export.excel');
+
+    Route::get('/kategori/export/excel',
+        [KategoriController::class, 'exportExcel'])
+        ->name('kategori.export.excel');
+
+    Route::get('/detail-rental/export/excel',
+        [DetailRentalController::class, 'exportExcel'])
+        ->name('detail-rental.export.excel');
 });
 
 require __DIR__.'/auth.php';

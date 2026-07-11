@@ -6,6 +6,8 @@ use App\Models\Pelanggan;
 use Illuminate\Http\Request;
 use App\Http\Requests\StorePelangganRequest;
 use App\Http\Requests\UpdatePelangganRequest;
+use App\Exports\PelangganExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PelangganController extends Controller
 {
@@ -112,4 +114,14 @@ class PelangganController extends Controller
                 'Data pelanggan berhasil dihapus'
             );
     }
+
+    public function exportExcel()
+    {
+        return Excel::download(
+            new PelangganExport,
+            'pelanggan.xlsx'
+            );
+    }
+
+    
 }

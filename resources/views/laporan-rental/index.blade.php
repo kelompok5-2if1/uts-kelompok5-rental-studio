@@ -17,6 +17,12 @@
        class="bg-red-500 text-white px-4 py-2 rounded">
         Export PDF
     </a>
+    <a href="{{ route('laporan-rental.export.excel') }}"
+        class="bg-green-600 text-white px-4 py-2 rounded">
+
+        Export Excel
+
+    </a>
     
     <form action="{{ route('laporan-rental.index') }}" method="GET" class="w-full md:w-auto">
         <div class="flex gap-2">
@@ -95,7 +101,7 @@
             @method('DELETE')
 
             <button type="submit"
-                    onclick="return confirm('Yakin ingin menghapus data ini?')"
+                    onclick="event.preventDefault(); confirmDelete(event);"
                     class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition">
 
                 Hapus

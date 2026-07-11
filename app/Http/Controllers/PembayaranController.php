@@ -32,6 +32,8 @@ class PembayaranController extends Controller
 
     public function create()
     {
+        $this->authorizeWriteAccess('pembayaran');
+
         $rental = RentalAlat::all();
 
         return view('pembayaran.create', compact('rental'));
@@ -39,6 +41,8 @@ class PembayaranController extends Controller
 
     public function store(StorePembayaranRequest $request)
     {
+        $this->authorizeWriteAccess('pembayaran');
+
         Pembayaran::create($request->validated());
 
         return redirect('/pembayaran');
@@ -46,6 +50,8 @@ class PembayaranController extends Controller
 
     public function edit($id)
     {
+        $this->authorizeWriteAccess('pembayaran');
+
         $pembayaran = Pembayaran::findOrFail($id);
 
         $rental = RentalAlat::all();
@@ -58,6 +64,8 @@ class PembayaranController extends Controller
 
     public function update(UpdatePembayaranRequest $request, $id)
     {
+        $this->authorizeWriteAccess('pembayaran');
+
         $pembayaran = Pembayaran::findOrFail($id);
 
         $pembayaran->update($request->validated());
@@ -67,6 +75,8 @@ class PembayaranController extends Controller
 
     public function destroy($id)
     {
+        $this->authorizeWriteAccess('pembayaran');
+
         $pembayaran = Pembayaran::findOrFail($id);
 
         $pembayaran->delete();

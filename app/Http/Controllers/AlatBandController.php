@@ -55,6 +55,8 @@ class AlatBandController extends Controller
      */
     public function create()
     {
+        $this->authorizeWriteAccess('alat-band');
+
         $kategori = Kategori::orderBy('nama_kategori')
                             ->get();
 
@@ -69,6 +71,8 @@ class AlatBandController extends Controller
      */
     public function store(StoreAlatBandRequest $request)
     {
+        $this->authorizeWriteAccess('alat-band');
+
         $data = $request->validated();
 
         if ($request->hasFile('foto')) {
@@ -93,6 +97,8 @@ class AlatBandController extends Controller
      */
     public function edit($id)
     {
+        $this->authorizeWriteAccess('alat-band');
+
         $alatBand = AlatBand::findOrFail($id);
 
         $kategori = Kategori::orderBy('nama_kategori')
@@ -114,6 +120,8 @@ class AlatBandController extends Controller
         UpdateAlatBandRequest $request,
         $id
     ) {
+        $this->authorizeWriteAccess('alat-band');
+
         $alatBand = AlatBand::findOrFail($id);
 
         $data = $request->validated();
@@ -149,6 +157,8 @@ class AlatBandController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorizeWriteAccess('alat-band');
+
         $alatBand = AlatBand::findOrFail($id);
 
         if (

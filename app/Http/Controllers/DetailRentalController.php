@@ -31,6 +31,8 @@ class DetailRentalController extends Controller
 
     public function create()
     {
+        $this->authorizeWriteAccess('detail-rental');
+
         $rental = RentalAlat::all();
         $alat = AlatBand::all();
 
@@ -39,6 +41,8 @@ class DetailRentalController extends Controller
 
     public function store(StoreDetailRentalRequest $request)
     {
+        $this->authorizeWriteAccess('detail-rental');
+
         DetailRental::create($request->validated());
 
         return redirect('/detail-rental');
@@ -46,6 +50,8 @@ class DetailRentalController extends Controller
 
     public function edit($id)
     {
+        $this->authorizeWriteAccess('detail-rental');
+
         $detailRental = DetailRental::findOrFail($id);
 
         $rental = RentalAlat::all();
@@ -60,6 +66,8 @@ class DetailRentalController extends Controller
 
     public function update(UpdateDetailRentalRequest $request, $id)
     {
+        $this->authorizeWriteAccess('detail-rental');
+
         $detailRental = DetailRental::findOrFail($id);
 
         $detailRental->update($request->validated());
@@ -69,6 +77,8 @@ class DetailRentalController extends Controller
 
     public function destroy($id)
     {
+        $this->authorizeWriteAccess('detail-rental');
+
         $detailRental = DetailRental::findOrFail($id);
 
         $detailRental->delete();

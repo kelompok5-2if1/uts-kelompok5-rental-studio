@@ -56,11 +56,15 @@ class PelangganController extends Controller
 
     public function create()
     {
+        $this->authorizeWriteAccess('pelanggan');
+
         return view('pelanggan.create');
     }
 
     public function store(StorePelangganRequest $request)
     {
+        $this->authorizeWriteAccess('pelanggan');
+
         Pelanggan::create(
             $request->validated()
         );
@@ -75,6 +79,8 @@ class PelangganController extends Controller
 
     public function edit($id)
     {
+        $this->authorizeWriteAccess('pelanggan');
+
         $pelanggan = Pelanggan::findOrFail($id);
 
         return view(
@@ -87,6 +93,8 @@ class PelangganController extends Controller
         UpdatePelangganRequest $request,
         $id
     ) {
+        $this->authorizeWriteAccess('pelanggan');
+
         $pelanggan = Pelanggan::findOrFail($id);
 
         $pelanggan->update(
@@ -103,6 +111,8 @@ class PelangganController extends Controller
 
     public function destroy($id)
     {
+        $this->authorizeWriteAccess('pelanggan');
+
         $pelanggan = Pelanggan::findOrFail($id);
 
         $pelanggan->delete();

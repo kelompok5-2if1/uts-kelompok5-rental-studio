@@ -37,6 +37,8 @@ class BookingStudioController extends Controller
 
     public function create()
     {
+        $this->authorizeWriteAccess('booking-studio');
+
         $pelanggan = Pelanggan::all();
 
         $studio = Studio::all();
@@ -49,6 +51,8 @@ class BookingStudioController extends Controller
 
     public function store(StoreBookingStudioRequest $request)
     {
+        $this->authorizeWriteAccess('booking-studio');
+
         BookingStudio::create($request->validated());
 
         return redirect('/booking-studio');
@@ -56,6 +60,8 @@ class BookingStudioController extends Controller
 
     public function edit($id)
     {
+        $this->authorizeWriteAccess('booking-studio');
+
         $bookingStudio = BookingStudio::findOrFail($id);
 
         $pelanggan = Pelanggan::all();
@@ -71,6 +77,8 @@ class BookingStudioController extends Controller
 
     public function update(UpdateBookingStudioRequest $request, $id)
     {
+        $this->authorizeWriteAccess('booking-studio');
+
         $bookingStudio = BookingStudio::findOrFail($id);
 
         $bookingStudio->update($request->validated());
@@ -80,6 +88,8 @@ class BookingStudioController extends Controller
 
     public function destroy($id)
     {
+        $this->authorizeWriteAccess('booking-studio');
+
         $bookingStudio = BookingStudio::findOrFail($id);
 
         $bookingStudio->delete();

@@ -38,11 +38,15 @@ class KategoriController extends Controller
 
     public function create()
     {
+        $this->authorizeWriteAccess('kategori');
+
         return view('kategori.create');
     }
 
     public function store(StoreKategoriRequest $request)
     {
+        $this->authorizeWriteAccess('kategori');
+
         Kategori::create($request->validated());
 
         return redirect('/kategori');
@@ -50,6 +54,8 @@ class KategoriController extends Controller
 
     public function edit($id)
     {
+        $this->authorizeWriteAccess('kategori');
+
         $kategori = Kategori::findOrFail($id);
 
         return view('kategori.edit', compact('kategori'));
@@ -57,6 +63,8 @@ class KategoriController extends Controller
 
     public function update(UpdateKategoriRequest $request, $id)
     {
+        $this->authorizeWriteAccess('kategori');
+
         $kategori = Kategori::findOrFail($id);
 
         $kategori->update($request->validated());
@@ -66,6 +74,8 @@ class KategoriController extends Controller
 
     public function destroy($id)
     {
+        $this->authorizeWriteAccess('kategori');
+
         $kategori = Kategori::findOrFail($id);
 
         $kategori->delete();

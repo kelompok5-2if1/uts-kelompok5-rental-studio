@@ -31,59 +31,71 @@
             </div>
 
             <!-- Statistics Cards -->
+            @php $userRole = strtolower(Auth::user()->role ?? 'admin'); @endphp
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
-                <div class="rounded-2xl border border-blue-100 bg-white p-4 md:p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Total Pelanggan</p>
-                            <p class="mt-2 text-2xl font-bold text-gray-800">{{ $totalPelanggan }}</p>
+                @if(in_array($userRole, ['admin', 'owner']))
+                    <div class="rounded-2xl border border-blue-100 bg-white p-4 md:p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Total Pelanggan</p>
+                                <p class="mt-2 text-2xl font-bold text-gray-800">{{ $totalPelanggan }}</p>
+                            </div>
+                            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-2xl text-blue-600">👤</div>
                         </div>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-2xl text-blue-600">👤</div>
                     </div>
-                </div>
-                <div class="rounded-2xl border border-green-100 bg-white p-4 md:p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Total Studio</p>
-                            <p class="mt-2 text-2xl font-bold text-gray-800">{{ $totalStudio }}</p>
+                    <div class="rounded-2xl border border-green-100 bg-white p-4 md:p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Total Studio</p>
+                                <p class="mt-2 text-2xl font-bold text-gray-800">{{ $totalStudio }}</p>
+                            </div>
+                            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-50 text-2xl text-green-600">🎤</div>
                         </div>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-50 text-2xl text-green-600">🎤</div>
                     </div>
-                </div>
-                <div class="rounded-2xl border border-purple-100 bg-white p-4 md:p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Alat Band</p>
-                            <p class="mt-2 text-2xl font-bold text-gray-800">{{ $totalAlat }}</p>
+                    <div class="rounded-2xl border border-purple-100 bg-white p-4 md:p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Alat Band</p>
+                                <p class="mt-2 text-2xl font-bold text-gray-800">{{ $totalAlat }}</p>
+                            </div>
+                            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 text-2xl text-purple-600">🎸</div>
                         </div>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 text-2xl text-purple-600">🎸</div>
                     </div>
-                </div>
-                <div class="rounded-2xl border border-orange-100 bg-white p-4 md:p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Total Booking</p>
-                            <p class="mt-2 text-2xl font-bold text-gray-800">{{ $totalBooking }}</p>
+                    <div class="rounded-2xl border border-orange-100 bg-white p-4 md:p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Total Booking</p>
+                                <p class="mt-2 text-2xl font-bold text-gray-800">{{ $totalBooking }}</p>
+                            </div>
+                            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-2xl text-orange-600">📅</div>
                         </div>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-2xl text-orange-600">📅</div>
                     </div>
-                </div>
-                <div class="rounded-2xl border border-red-100 bg-white p-4 md:p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Total Rental</p>
-                            <p class="mt-2 text-2xl font-bold text-gray-800">{{ $totalRental }}</p>
+                    <div class="rounded-2xl border border-red-100 bg-white p-4 md:p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Total Rental</p>
+                                <p class="mt-2 text-2xl font-bold text-gray-800">{{ $totalRental }}</p>
+                            </div>
+                            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-2xl text-red-600">🎁</div>
                         </div>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-2xl text-red-600">🎁</div>
                     </div>
-                </div>
+                @endif
                 <div class="rounded-2xl border border-cyan-100 bg-white p-4 md:p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Total Pembayaran</p>
+                            <p class="mt-2 text-2xl font-bold text-gray-800">{{ $totalPembayaran }}</p>
+                        </div>
+                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-50 text-2xl text-cyan-600">💳</div>
+                    </div>
+                </div>
+                <div class="rounded-2xl border border-emerald-100 bg-white p-4 md:p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Total Pendapatan</p>
                             <p class="mt-2 text-2xl font-bold text-gray-800">Rp. {{ number_format($totalPendapatan, 0, ',', '.') }}</p>
                         </div>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-50 text-2xl text-cyan-600">💳</div>
+                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-2xl text-emerald-600">💰</div>
                     </div>
                 </div>
             </div>

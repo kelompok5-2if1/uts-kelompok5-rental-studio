@@ -18,7 +18,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // API Resource Routes
-    Route::prefix('v1')->group(function () {
+    Route::prefix('v1')->name('api.')->group(function () {
         Route::apiResource('pelanggan', PelangganController::class);
         Route::apiResource('kategori', KategoriController::class);
         Route::apiResource('studio', StudioController::class);

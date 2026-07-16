@@ -18,63 +18,13 @@ class LaporanRentalController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search', '');
+        $data = $this->buildReportData($search);
 
-        $bookings = BookingStudio::with(['pelanggan', 'studio'])->get();
-        $rentals = RentalAlat::with(['pelanggan', 'alatBand'])->get();
-        $payments = Pembayaran::with(['rentalAlat', 'bookingStudio'])->get();
-
-        $reportRows = collect();
-
-        foreach ($bookings as $booking) {
-            $reportRows->push([
-                'pelanggan' => $booking->pelanggan->nama ?? '-',
-                'jenis_transaksi' => 'Booking Studio',
-                'tanggal' => $booking->tanggal_booking,
-                'metode_pembayaran' => '-',
-                'total' => $booking->total_harga,
-                'status' => $booking->status,
-            ]);
-        }
-
-        foreach ($rentals as $rental) {
-            $reportRows->push([
-                'pelanggan' => $rental->pelanggan->nama ?? '-',
-                'jenis_transaksi' => 'Rental Alat',
-                'tanggal' => $rental->tanggal_sewa,
-                'metode_pembayaran' => '-',
-                'total' => $rental->total_harga,
-                'status' => $rental->status,
-            ]);
-        }
-
-        foreach ($payments as $payment) {
-            $reportRows->push([
-                'pelanggan' => $payment->rentalAlat?->pelanggan?->nama ?? $payment->bookingStudio?->pelanggan?->nama ?? '-',
-                'jenis_transaksi' => $payment->jenis_transaksi ?? 'Pembayaran',
-                'tanggal' => $payment->tanggal_bayar,
-                'metode_pembayaran' => $payment->metode_bayar,
-                'total' => $payment->total_bayar,
-                'status' => $payment->status,
-            ]);
-        }
-
-        $laporan = $reportRows->filter(function ($row) use ($search) {
-            if ($search === '') {
-                return true;
-            }
-
-            return str_contains(strtolower($row['pelanggan']), strtolower($search))
-                || str_contains(strtolower($row['jenis_transaksi']), strtolower($search))
-                || str_contains(strtolower($row['status']), strtolower($search));
-        })->values();
-
-        $summary = [
-            'total_booking' => $bookings->count(),
-            'total_rental' => $rentals->count(),
-            'total_pendapatan' => $payments->sum('total_bayar'),
-        ];
-
-        return view('laporan-rental.index', compact('laporan', 'search', 'summary'));
+        return view('laporan-rental.index', [
+            'laporan' => $data['laporan'],
+            'search' => $search,
+            'summary' => $data['summary'],
+        ]);
     }
 
     public function create()
@@ -126,11 +76,11 @@ class LaporanRentalController extends Controller
 
     public function exportPdf()
     {
-        $laporan = LaporanRental::all();
+        $data = $this->buildReportData('');
 
         $pdf = Pdf::loadView(
             'laporan-rental.pdf',
-            compact('laporan')
+            ['laporan' => $data['laporan']]
         );
 
         return $pdf->download(
@@ -140,9 +90,80 @@ class LaporanRentalController extends Controller
 
     public function exportExcel()
     {
+        $data = $this->buildReportData('');
+
         return Excel::download(
-            new LaporanRentalExport,
+            new LaporanRentalExport($data['laporan']),
             'laporan-rental.xlsx'
         );
+    }
+
+    private function buildReportData(string $search = ''): array
+    {
+        $bookings = BookingStudio::with(['pelanggan', 'studio'])->get();
+        $rentals = RentalAlat::with(['pelanggan', 'alatBand'])->get();
+        $payments = Pembayaran::with(['rentalAlat', 'bookingStudio'])->get();
+
+        $reportRows = collect();
+
+        foreach ($bookings as $booking) {
+            $reportRows->push([
+                'pelanggan' => $booking->pelanggan->nama ?? '-',
+                'jenis_transaksi' => 'Booking Studio',
+                'tanggal' => $booking->tanggal_booking,
+                'metode_pembayaran' => '-',
+                'total' => $booking->total_harga,
+                'total_bayar' => $booking->total_harga,
+                'nominal_dibayar' => null,
+                'kembalian' => null,
+                'status' => $booking->status,
+            ]);
+        }
+
+        foreach ($rentals as $rental) {
+            $reportRows->push([
+                'pelanggan' => $rental->pelanggan->nama ?? '-',
+                'jenis_transaksi' => 'Rental Alat',
+                'tanggal' => $rental->tanggal_sewa,
+                'metode_pembayaran' => '-',
+                'total' => $rental->total_harga,
+                'total_bayar' => $rental->total_harga,
+                'nominal_dibayar' => null,
+                'kembalian' => null,
+                'status' => $rental->status,
+            ]);
+        }
+
+        foreach ($payments as $payment) {
+            $reportRows->push([
+                'pelanggan' => $payment->rentalAlat?->pelanggan?->nama ?? $payment->bookingStudio?->pelanggan?->nama ?? '-',
+                'jenis_transaksi' => $payment->jenis_transaksi ?? 'Pembayaran',
+                'tanggal' => $payment->tanggal_bayar,
+                'metode_pembayaran' => $payment->metode_bayar,
+                'total' => $payment->total_bayar,
+                'total_bayar' => $payment->total_bayar,
+                'nominal_dibayar' => $payment->nominal_dibayar,
+                'kembalian' => $payment->kembalian,
+                'status' => $payment->status,
+            ]);
+        }
+
+        $laporan = $reportRows->filter(function ($row) use ($search) {
+            if ($search === '') {
+                return true;
+            }
+
+            return str_contains(strtolower($row['pelanggan']), strtolower($search))
+                || str_contains(strtolower($row['jenis_transaksi']), strtolower($search))
+                || str_contains(strtolower($row['status']), strtolower($search));
+        })->values();
+
+        $summary = [
+            'total_booking' => $bookings->count(),
+            'total_rental' => $rentals->count(),
+            'total_pendapatan' => $payments->sum('total_bayar'),
+        ];
+
+        return compact('laporan', 'summary');
     }
 }

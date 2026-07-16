@@ -9,8 +9,13 @@ class AlatBandFactory extends Factory
 {
     public function definition(): array
     {
+        $kategori = Kategori::query()->inRandomOrder()->first() ?? Kategori::create([
+            'nama_kategori' => 'Umum',
+            'deskripsi' => 'Kategori default untuk data uji',
+        ]);
+
         return [
-            'kategori_alat_id' => Kategori::inRandomOrder()->first()->id,
+            'kategori_alat_id' => $kategori->id,
             'nama_alat' => fake()->randomElement([
                 'Yamaha Guitar',
                 'Pearl Drum',

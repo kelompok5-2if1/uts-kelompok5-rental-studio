@@ -1,4 +1,9 @@
 <x-app-layout>
+@php
+    $userRole = strtolower(Auth::user()->role ?? 'admin');
+    $canManage = $userRole === 'admin';
+    $canExport = in_array($userRole, ['admin', 'owner'], true);
+@endphp
 
 <div class="p-6">
 
@@ -7,16 +12,18 @@
     </h1>
 
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-5">
-        <a href="{{ route('studio.create') }}"
-           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition whitespace-nowrap">
-            Tambah Studio
-        </a>
-         <a href="{{ route('studio.export.excel') }}"
-            class="bg-green-600 text-white px-4 py-2 rounded">
-
-            Export Excel
-
-        </a>
+        @if($canManage)
+            <a href="{{ route('studio.create') }}"
+               class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition whitespace-nowrap">
+                Tambah Studio
+            </a>
+        @endif
+        @if($canExport)
+            <a href="{{ route('studio.export.excel') }}"
+               class="bg-green-600 text-white px-4 py-2 rounded">
+                Export Excel
+            </a>
+        @endif
 
         <form action="{{ route('studio.index') }}" method="GET" class="w-full md:w-auto">
             <div class="flex flex-col md:flex-row gap-2">
@@ -59,7 +66,9 @@
                     <th class="border p-2 whitespace-nowrap">Kapasitas</th>
                     <th class="border p-2 whitespace-nowrap">Harga per Jam</th>
                     <th class="border p-2 whitespace-nowrap">Status</th>
-                    <th class="border p-2 whitespace-nowrap">Aksi</th>
+                    @if($canManage)
+                        <th class="border p-2 whitespace-nowrap">Aksi</th>
+                    @endif
                 </tr>
             </thead>
 
@@ -94,27 +103,31 @@
                             {{ $item->status }}
                         </span>
                     </td>
-                    <td class="border p-2 text-center whitespace-nowrap">
-                        <a href="{{ route('studio.edit', $item->id) }}"
-                           class="bg-yellow-400 px-3 py-1 rounded text-sm hover:bg-yellow-500 transition">
-                            Edit
-                        </a>
-                        <form action="{{ route('studio.destroy', $item->id) }}"
-                              method="POST"
-                              class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                    onclick="event.preventDefault(); confirmDelete(event);"
-                                    class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition">
-                                Hapus
-                            </button>
-                        </form>
-                    </td>
+                    @if($canManage)
+                        <td class="border p-2 text-center whitespace-nowrap">
+                            <a href="{{ route('studio.edit', $item->id) }}"
+                               class="bg-yellow-400 px-3 py-1 rounded text-sm hover:bg-yellow-500 transition">
+                                Edit
+                            </a>
+                            <form action="{{ route('studio.destroy', $item->id) }}"
+                                  method="POST"
+                                  class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        onclick="event.preventDefault(); confirmDelete(event);"
+                                        class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition">
+                                    Hapus
+                                </button>
+                            </form>
+                        </td>
+                    @else
+                        <td class="border p-2 text-center whitespace-nowrap text-gray-400">-</td>
+                    @endif
                 </tr>
                 @empty
                 <tr>
-                    <td class="border p-2 text-center" colspan="7">
+                    <td class="border p-2 text-center" colspan="{{ $canManage ? 7 : 6 }}">
                         @if($search || $filter)
                             Tidak ada data studio yang sesuai dengan pencarian atau filter
                         @else

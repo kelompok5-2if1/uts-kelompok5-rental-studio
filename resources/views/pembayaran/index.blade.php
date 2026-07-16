@@ -1,4 +1,10 @@
 <x-app-layout>
+@php
+    $userRole = strtolower(Auth::user()->role ?? 'admin');
+    $canManage = in_array($userRole, ['admin', 'kasir'], true);
+    $canDelete = $userRole === 'admin';
+    $canExport = in_array($userRole, ['admin', 'owner'], true);
+@endphp
 
 <div class="p-6">
 
@@ -7,18 +13,18 @@
 </h1>
 
 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
-    <a href="{{ route('pembayaran.create') }}"
-       class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
-
-        Tambah Data
-
-    </a>
-    <a href="{{ route('pembayaran.export.excel') }}"
-        class="bg-green-600 text-white px-4 py-2 rounded">
-
-        Export Excel
-
-    </a>
+    @if($canManage)
+        <a href="{{ route('pembayaran.create') }}"
+           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+            Tambah Data
+        </a>
+    @endif
+    @if($canExport)
+        <a href="{{ route('pembayaran.export.excel') }}"
+            class="bg-green-600 text-white px-4 py-2 rounded">
+            Export Excel
+        </a>
+    @endif
     
     <form action="{{ route('pembayaran.index') }}" method="GET" class="w-full md:w-auto">
         <div class="flex flex-col md:flex-row gap-2">
@@ -58,7 +64,9 @@
             <th class="border p-2">Metode</th>
             <th class="border p-2">Total</th>
             <th class="border p-2">Status</th>
-            <th class="border p-2">Aksi</th>
+            @if($canManage)
+                <th class="border p-2">Aksi</th>
+            @endif
         </tr>
     </thead>
 
@@ -90,33 +98,29 @@
             </span>
         </td>
 
-        <td class="border p-2 text-center">
-
-        <a href="{{ route('pembayaran.edit', $item->id) }}"
-           class="bg-yellow-400 px-3 py-1 rounded text-sm hover:bg-yellow-500 transition">
-
-            Edit
-
-        </a>
-
-        <form action="{{ route('pembayaran.destroy', $item->id) }}"
-              method="POST"
-              class="inline">
-
-            @csrf
-            @method('DELETE')
-
-            <button type="submit"
-                    onclick="event.preventDefault(); confirmDelete(event);"
-                    class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition">
-
-                Hapus
-
-            </button>
-
-        </form>
-
-        </td>
+        @if($canManage)
+            <td class="border p-2 text-center">
+                <a href="{{ route('pembayaran.edit', $item->id) }}"
+                   class="bg-yellow-400 px-3 py-1 rounded text-sm hover:bg-yellow-500 transition">
+                    Edit
+                </a>
+                @if($canDelete)
+                    <form action="{{ route('pembayaran.destroy', $item->id) }}"
+                          method="POST"
+                          class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                                onclick="event.preventDefault(); confirmDelete(event);"
+                                class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition">
+                            Hapus
+                        </button>
+                    </form>
+                @endif
+            </td>
+        @else
+            <td class="border p-2 text-center text-gray-400">-</td>
+        @endif
 
         </tr>
 

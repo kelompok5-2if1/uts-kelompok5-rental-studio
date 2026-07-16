@@ -1,4 +1,9 @@
 <x-app-layout>
+@php
+    $userRole = strtolower(Auth::user()->role ?? 'admin');
+    $canManage = $userRole === 'admin';
+    $canExport = in_array($userRole, ['admin', 'owner'], true);
+@endphp
 
 <div class="p-6">
 
@@ -7,18 +12,18 @@
     </h1>
 
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-5">
-        <a href="{{ route('rental-alat.create') }}"
-           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
-
-            Tambah Rental
-
-        </a>
-        <a href="{{ route('rental-alat.export.excel') }}"
-            class="bg-green-600 text-white px-4 py-2 rounded">
-
-            Export Excel
-
-        </a>
+        @if($canManage)
+            <a href="{{ route('rental-alat.create') }}"
+               class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                Tambah Rental
+            </a>
+        @endif
+        @if($canExport)
+            <a href="{{ route('rental-alat.export.excel') }}"
+                class="bg-green-600 text-white px-4 py-2 rounded">
+                Export Excel
+            </a>
+        @endif
         
         <form action="{{ route('rental-alat.index') }}" method="GET" class="w-full md:w-auto">
             <div class="flex flex-col md:flex-row gap-2">
@@ -62,7 +67,9 @@
                 <th class="border p-2">Jumlah</th>
                 <th class="border p-2">Total Harga</th>
                 <th class="border p-2">Status</th>
-                <th class="border p-2">Aksi</th>
+                @if($canManage)
+                    <th class="border p-2">Aksi</th>
+                @endif
 
             </tr>
 
@@ -106,33 +113,27 @@
                     {{ $item->status }}
                 </td>
 
-                <td class="border p-2">
-
-                    <a href="{{ route('rental-alat.edit', $item->id) }}"
-                       class="bg-yellow-400 px-3 py-1 rounded">
-
-                        Edit
-
-                    </a>
-
-                    <form action="{{ route('rental-alat.destroy', $item->id) }}"
-                          method="POST"
-                          class="inline">
-
-                        @csrf
-                        @method('DELETE')
-
-                        <button type="submit"
-                                onclick="event.preventDefault(); confirmDelete(event);"
-                                class="bg-red-500 text-white px-3 py-1 rounded">
-
-                            Hapus
-
-                        </button>
-
-                    </form>
-
-                </td>
+                @if($canManage)
+                    <td class="border p-2">
+                        <a href="{{ route('rental-alat.edit', $item->id) }}"
+                           class="bg-yellow-400 px-3 py-1 rounded">
+                            Edit
+                        </a>
+                        <form action="{{ route('rental-alat.destroy', $item->id) }}"
+                              method="POST"
+                              class="inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                    onclick="event.preventDefault(); confirmDelete(event);"
+                                    class="bg-red-500 text-white px-3 py-1 rounded">
+                                Hapus
+                            </button>
+                        </form>
+                    </td>
+                @else
+                    <td class="border p-2 text-center text-gray-400">-</td>
+                @endif
 
             </tr>
 

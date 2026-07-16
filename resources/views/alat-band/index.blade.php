@@ -1,4 +1,9 @@
 <x-app-layout>
+@php
+    $userRole = strtolower(Auth::user()->role ?? 'admin');
+    $canManage = $userRole === 'admin';
+    $canExport = in_array($userRole, ['admin', 'owner'], true);
+@endphp
 
 <div class="max-w-7xl mx-auto p-4 md:p-6">
 
@@ -12,19 +17,19 @@
     {{-- Toolbar --}}
     <div class="flex flex-col lg:flex-row gap-4 justify-between mb-6">
 
-        <a href="{{ route('alat-band.create') }}"
-           class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-center">
+        @if($canManage)
+            <a href="{{ route('alat-band.create') }}"
+               class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-center">
+                + Tambah Alat
+            </a>
+        @endif
 
-            + Tambah Alat
-
-        </a>
-
-        <a href="{{ route('alat-band.export.excel') }}"
-            class="bg-green-600 text-white px-4 py-2 rounded">
-
-            Export Excel
-
-        </a>
+        @if($canExport)
+            <a href="{{ route('alat-band.export.excel') }}"
+                class="bg-green-600 text-white px-4 py-2 rounded">
+                Export Excel
+            </a>
+        @endif
 
         <form action="{{ route('alat-band.index') }}"
               method="GET"
@@ -102,7 +107,9 @@
                         <th class="p-3 text-center">Stok</th>
                         <th class="p-3">Harga</th>
                         <th class="p-3 text-center">Kondisi</th>
-                        <th class="p-3 text-center">Aksi</th>
+                        @if($canManage)
+                            <th class="p-3 text-center">Aksi</th>
+                        @endif
                     </tr>
 
                 </thead>
@@ -177,39 +184,29 @@
 
                         </td>
 
-                        <td class="p-3">
-
-                            <div class="flex flex-col md:flex-row gap-2 justify-center">
-
-                                <a href="{{ route('alat-band.edit',$item->id) }}"
-                                   class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded text-center">
-
-                                    Edit
-
-                                </a>
-
-                                <form
-                                    id="delete-form-{{ $item->id }}"
-                                    action="{{ route('alat-band.destroy',$item->id) }}"
-                                    method="POST">
-
-                                    @csrf
-                                    @method('DELETE')
-
-                                    <button
-                                        type="button"
-                                        onclick="confirmDelete({{ $item->id }})"
-                                        class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded w-full">
-
-                                        Hapus
-
-                                    </button>
-
-                                </form>
-
-                            </div>
-
-                        </td>
+                        @if($canManage)
+                            <td class="p-3">
+                                <div class="flex flex-col md:flex-row gap-2 justify-center">
+                                    <a href="{{ route('alat-band.edit',$item->id) }}"
+                                       class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded text-center">
+                                        Edit
+                                    </a>
+                                    <form id="delete-form-{{ $item->id }}"
+                                          action="{{ route('alat-band.destroy',$item->id) }}"
+                                          method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button"
+                                                onclick="confirmDelete({{ $item->id }})"
+                                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded w-full">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        @else
+                            <td class="p-3 text-center text-gray-400">-</td>
+                        @endif
 
                     </tr>
 

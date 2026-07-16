@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Pembayaran;
-use App\Models\RentalAlat;
+use App\Exports\PembayaranExport;
 use App\Http\Requests\StorePembayaranRequest;
 use App\Http\Requests\UpdatePembayaranRequest;
-use App\Exports\PembayaranExport;
+use App\Models\BookingStudio;
+use App\Models\Pembayaran;
+use App\Models\RentalAlat;
+use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
 class PembayaranController extends Controller
@@ -16,7 +17,7 @@ class PembayaranController extends Controller
     {
         $search = $request->query('search', '');
         $status = $request->query('status', '');
-        $pembayaran = Pembayaran::with('rentalAlat')
+        $pembayaran = Pembayaran::with(['rentalAlat', 'bookingStudio'])
                                ->when($search, function ($query) use ($search) {
                                    return $query->where('metode_bayar', 'like', '%' . $search . '%')
                                                 ->orWhere('status', 'like', '%' . $search . '%');
@@ -24,6 +25,7 @@ class PembayaranController extends Controller
                                ->when($status, function ($query) use ($status) {
                                    return $query->where('status', $status);
                                })
+                               ->latest()
                                ->paginate(10)
                                ->appends($request->query());
 
@@ -34,18 +36,50 @@ class PembayaranController extends Controller
     {
         $this->authorizeWriteAccess('pembayaran');
 
-        $rental = RentalAlat::all();
+        $bookings = BookingStudio::whereDoesntHave('pembayaran')
+            ->where('status', '!=', 'Batal')
+            ->with(['pelanggan', 'studio'])
+            ->get();
 
-        return view('pembayaran.create', compact('rental'));
+        $rentals = RentalAlat::whereDoesntHave('pembayaran')
+            ->where('status', '!=', 'Dikembalikan')
+            ->with(['pelanggan', 'alatBand'])
+            ->get();
+
+        return view('pembayaran.create', compact('bookings', 'rentals'));
     }
 
     public function store(StorePembayaranRequest $request)
     {
         $this->authorizeWriteAccess('pembayaran');
 
-        Pembayaran::create($request->validated());
+        $totalTagihan = $this->resolveTotalTagihan($request);
 
-        return redirect('/pembayaran');
+        if ($request->nominal_dibayar < $totalTagihan) {
+            return back()->withErrors(['nominal_dibayar' => 'Pembayaran tidak mencukupi.'])->withInput();
+        }
+
+        $data = $request->validated();
+        $data['total_bayar'] = $totalTagihan;
+        $data['nominal_dibayar'] = $request->nominal_dibayar;
+        $data['kembalian'] = $request->nominal_dibayar - $totalTagihan;
+        $data['status'] = 'Lunas';
+
+        $payment = Pembayaran::create($data);
+
+        if ($request->jenis_transaksi === 'Booking Studio') {
+            $booking = BookingStudio::findOrFail($request->booking_studio_id);
+            $booking->update(['status' => 'Selesai']);
+            $payment->booking_studio_id = $booking->id;
+            $payment->save();
+        } else {
+            $rental = RentalAlat::findOrFail($request->rental_alat_id);
+            $rental->update(['status' => 'Dikembalikan']);
+            $payment->rental_alat_id = $rental->id;
+            $payment->save();
+        }
+
+        return redirect('/pembayaran')->with('success', 'Pembayaran berhasil dicatat.');
     }
 
     public function edit($id)
@@ -53,13 +87,10 @@ class PembayaranController extends Controller
         $this->authorizeWriteAccess('pembayaran');
 
         $pembayaran = Pembayaran::findOrFail($id);
+        $bookings = BookingStudio::whereDoesntHave('pembayaran')->with(['pelanggan', 'studio'])->get();
+        $rentals = RentalAlat::whereDoesntHave('pembayaran')->with(['pelanggan', 'alatBand'])->get();
 
-        $rental = RentalAlat::all();
-
-        return view('pembayaran.edit', compact(
-            'pembayaran',
-            'rental'
-        ));
+        return view('pembayaran.edit', compact('pembayaran', 'bookings', 'rentals'));
     }
 
     public function update(UpdatePembayaranRequest $request, $id)
@@ -67,10 +98,21 @@ class PembayaranController extends Controller
         $this->authorizeWriteAccess('pembayaran');
 
         $pembayaran = Pembayaran::findOrFail($id);
+        $totalTagihan = $this->resolveTotalTagihan($request);
 
-        $pembayaran->update($request->validated());
+        if ($request->nominal_dibayar < $totalTagihan) {
+            return back()->withErrors(['nominal_dibayar' => 'Pembayaran tidak mencukupi.'])->withInput();
+        }
 
-        return redirect('/pembayaran');
+        $data = $request->validated();
+        $data['total_bayar'] = $totalTagihan;
+        $data['nominal_dibayar'] = $request->nominal_dibayar;
+        $data['kembalian'] = $request->nominal_dibayar - $totalTagihan;
+        $data['status'] = 'Lunas';
+
+        $pembayaran->update($data);
+
+        return redirect('/pembayaran')->with('success', 'Pembayaran berhasil diperbarui.');
     }
 
     public function destroy($id)
@@ -78,7 +120,6 @@ class PembayaranController extends Controller
         $this->authorizeWriteAccess('pembayaran');
 
         $pembayaran = Pembayaran::findOrFail($id);
-
         $pembayaran->delete();
 
         return redirect('/pembayaran');
@@ -91,5 +132,15 @@ class PembayaranController extends Controller
             'pembayaran.xlsx'
         );
     }
-    
+
+    private function resolveTotalTagihan(Request $request): float
+    {
+        if ($request->jenis_transaksi === 'Booking Studio') {
+            $booking = BookingStudio::findOrFail($request->booking_studio_id);
+            return (float) $booking->total_harga;
+        }
+
+        $rental = RentalAlat::findOrFail($request->rental_alat_id);
+        return (float) $rental->total_harga;
+    }
 }

@@ -12,19 +12,52 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pembayarans', function (Blueprint $table) {
+
             $table->id();
 
-            $table->foreignId('rental_alat_id')
-                ->constrained()
-                ->onDelete('cascade');
+            // Jenis transaksi
+            $table->enum('jenis_transaksi', [
+                'Booking Studio',
+                'Rental Alat'
+            ]);
 
+            // Relasi Booking Studio
+            $table->foreignId('booking_studio_id')
+                ->nullable()
+                ->constrained('booking_studios')
+                ->nullOnDelete();
+
+            // Relasi Rental Alat
+            $table->foreignId('rental_alat_id')
+                ->nullable()
+                ->constrained('rental_alats')
+                ->nullOnDelete();
+
+            // Tanggal pembayaran
             $table->date('tanggal_bayar');
 
-            $table->string('metode_bayar');
+            // Metode pembayaran
+            $table->enum('metode_bayar', [
+                'Cash',
+                'Transfer',
+                'QRIS',
+                'Debit'
+            ]);
 
+            // Total tagihan
             $table->decimal('total_bayar', 12, 2);
 
-            $table->string('status');
+            // Nominal yang dibayar customer
+            $table->decimal('nominal_dibayar', 12, 2);
+
+            // Kembalian
+            $table->decimal('kembalian', 12, 2)->default(0);
+
+            // Status pembayaran
+            $table->enum('status', [
+                'Belum Lunas',
+                'Lunas'
+            ])->default('Belum Lunas');
 
             $table->timestamps();
         });

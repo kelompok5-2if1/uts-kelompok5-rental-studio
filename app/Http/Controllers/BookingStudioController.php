@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Exports\BookingStudioExport;
+use App\Http\Requests\StoreBookingStudioRequest;
+use App\Http\Requests\UpdateBookingStudioRequest;
 use App\Models\BookingStudio;
 use App\Models\Pelanggan;
 use App\Models\Studio;
-use App\Http\Requests\StoreBookingStudioRequest;
-use App\Http\Requests\UpdateBookingStudioRequest;
-use App\Exports\BookingStudioExport;
+use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
 class BookingStudioController extends Controller
@@ -40,22 +40,25 @@ class BookingStudioController extends Controller
         $this->authorizeWriteAccess('booking-studio');
 
         $pelanggan = Pelanggan::all();
-
         $studio = Studio::all();
 
-        return view('booking-studio.create', compact(
-            'pelanggan',
-            'studio'
-        ));
+        return view('booking-studio.create', compact('pelanggan', 'studio'));
     }
 
     public function store(StoreBookingStudioRequest $request)
     {
         $this->authorizeWriteAccess('booking-studio');
 
-        BookingStudio::create($request->validated());
+        $studio = Studio::findOrFail($request->studio_id);
+        $durationHours = $this->calculateDurationHours($request->jam_mulai, $request->jam_selesai);
+        $total = $durationHours * $studio->harga_per_jam;
 
-        return redirect('/booking-studio');
+        $data = $request->validated();
+        $data['total_harga'] = $total;
+
+        BookingStudio::create($data);
+
+        return redirect('/booking-studio')->with('success', 'Booking studio berhasil dibuat.');
     }
 
     public function edit($id)
@@ -63,16 +66,10 @@ class BookingStudioController extends Controller
         $this->authorizeWriteAccess('booking-studio');
 
         $bookingStudio = BookingStudio::findOrFail($id);
-
         $pelanggan = Pelanggan::all();
-
         $studio = Studio::all();
 
-        return view('booking-studio.edit', compact(
-            'bookingStudio',
-            'pelanggan',
-            'studio'
-        ));
+        return view('booking-studio.edit', compact('bookingStudio', 'pelanggan', 'studio'));
     }
 
     public function update(UpdateBookingStudioRequest $request, $id)
@@ -80,10 +77,15 @@ class BookingStudioController extends Controller
         $this->authorizeWriteAccess('booking-studio');
 
         $bookingStudio = BookingStudio::findOrFail($id);
+        $studio = Studio::findOrFail($request->studio_id);
+        $durationHours = $this->calculateDurationHours($request->jam_mulai, $request->jam_selesai);
+        $total = $durationHours * $studio->harga_per_jam;
 
-        $bookingStudio->update($request->validated());
+        $data = $request->validated();
+        $data['total_harga'] = $total;
+        $bookingStudio->update($data);
 
-        return redirect('/booking-studio');
+        return redirect('/booking-studio')->with('success', 'Booking studio berhasil diperbarui.');
     }
 
     public function destroy($id)
@@ -91,10 +93,9 @@ class BookingStudioController extends Controller
         $this->authorizeWriteAccess('booking-studio');
 
         $bookingStudio = BookingStudio::findOrFail($id);
-
         $bookingStudio->delete();
 
-        return redirect('/booking-studio');
+        return redirect('/booking-studio')->with('success', 'Booking studio berhasil dihapus.');
     }
 
     public function exportExcel()
@@ -103,5 +104,14 @@ class BookingStudioController extends Controller
             new BookingStudioExport,
             'booking-studio.xlsx'
         );
+    }
+
+    private function calculateDurationHours(string $jamMulai, string $jamSelesai): int|float
+    {
+        $start = strtotime($jamMulai);
+        $end = strtotime($jamSelesai);
+        $minutes = max(0, ($end - $start) / 60);
+
+        return max(1, (int) ceil($minutes / 60));
     }
 }

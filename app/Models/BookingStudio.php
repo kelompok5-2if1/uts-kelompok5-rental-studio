@@ -25,4 +25,9 @@ class BookingStudio extends Model
     {
         return $this->belongsTo(Studio::class);
     }
+
+    public function pembayaran()
+    {
+        return $this->hasOne(Pembayaran::class);
+    }
 }

@@ -28,7 +28,7 @@ use App\Models\Pembayaran;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('landing');
 });
 
 /*
@@ -126,18 +126,10 @@ Route::middleware(['auth', 'role:admin,kasir,owner'])->group(function () {
         Route::resource('alat-band', AlatBandController::class)->except(['index']);
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | Transaksi
-    | index: admin, owner, kasir | create/edit/delete: admin, owner
-    |--------------------------------------------------------------------------
-    */
-
-    Route::middleware('role:admin,owner,kasir')->group(function () {
+    Route::middleware('role:admin,owner')->group(function () {
         Route::resource('booking-studio', BookingStudioController::class)->only(['index']);
         Route::resource('rental-alat', RentalAlatController::class)->only(['index']);
         Route::resource('detail-rental', DetailRentalController::class)->only(['index']);
-        Route::resource('pembayaran', PembayaranController::class)->only(['index']);
     });
 
     Route::middleware('role:admin,owner')->group(function () {
@@ -146,8 +138,19 @@ Route::middleware(['auth', 'role:admin,kasir,owner'])->group(function () {
         Route::resource('detail-rental', DetailRentalController::class)->except(['index']);
     });
 
-    Route::middleware('role:admin,kasir,owner')->group(function () {
-        Route::resource('pembayaran', PembayaranController::class)->except(['index']);
+    /*
+    |--------------------------------------------------------------------------
+    | Transaksi
+    | index: admin, owner, kasir | create/edit/delete: admin, owner
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('role:admin,kasir')->group(function () {
+        Route::resource('pembayaran', PembayaranController::class)->except(['destroy']);
+    });
+
+    Route::middleware('role:admin')->group(function () {
+        Route::resource('pembayaran', PembayaranController::class)->only(['destroy']);
     });
 
     /*

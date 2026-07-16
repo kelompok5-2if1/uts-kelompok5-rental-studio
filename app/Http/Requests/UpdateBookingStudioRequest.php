@@ -19,7 +19,6 @@ class UpdateBookingStudioRequest extends FormRequest
             'tanggal_booking' => 'required|date',
             'jam_mulai' => 'required|date_format:H:i',
             'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
-            'total_harga' => 'required|integer|min:1',
             'status' => 'required|string|in:Pending,Selesai,Batal',
         ];
     }

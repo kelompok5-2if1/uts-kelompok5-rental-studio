@@ -14,10 +14,12 @@ class UpdatePembayaranRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'rental_alat_id' => 'required|exists:rental_alats,id',
-            'tanggal_bayar' => 'required|date',
-            'metode_bayar' => 'required|string|in:Cash,Transfer,CC',
-            'total_bayar' => 'required|numeric|min:0.01',
+            'jenis_transaksi' => 'required|string|in:Booking Studio,Rental Alat',
+            'booking_studio_id' => 'nullable|exists:booking_studios,id',
+            'rental_alat_id' => 'nullable|exists:rental_alats,id',
+            'tanggal_bayar' => 'nullable|date',
+            'metode_bayar' => 'required|string|in:Cash,Transfer,QRIS,Debit',
+            'nominal_dibayar' => 'required|numeric|min:0.01',
             'status' => 'required|string|in:Pending,Lunas',
         ];
     }

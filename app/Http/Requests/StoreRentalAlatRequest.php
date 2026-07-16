@@ -19,7 +19,6 @@ class StoreRentalAlatRequest extends FormRequest
             'tanggal_sewa' => 'required|date|after_or_equal:today',
             'tanggal_kembali' => 'required|date|after_or_equal:tanggal_sewa',
             'jumlah' => 'required|integer|min:1',
-            'total_harga' => 'required|integer|min:1',
             'status' => 'required|string|in:Dipinjam,Dikembalikan',
         ];
     }

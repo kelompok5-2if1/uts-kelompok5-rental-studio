@@ -1,4 +1,9 @@
 <x-app-layout>
+@php
+    $userRole = strtolower(Auth::user()->role ?? 'admin');
+    $canManage = $userRole === 'admin';
+    $canExport = in_array($userRole, ['admin', 'owner'], true);
+@endphp
 
 <div class="p-6">
 
@@ -7,16 +12,18 @@
     </h1>
 
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-5">
-        <a href="{{ route('kategori.create') }}"
-           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition whitespace-nowrap">
-            Tambah Kategori
-        </a>
-        <a href="{{ route('kategori.export.excel') }}"
-            class="bg-green-600 text-white px-4 py-2 rounded">
-
-            Export Excel
-
-        </a>
+        @if($canManage)
+            <a href="{{ route('kategori.create') }}"
+               class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition whitespace-nowrap">
+                Tambah Kategori
+            </a>
+        @endif
+        @if($canExport)
+            <a href="{{ route('kategori.export.excel') }}"
+                class="bg-green-600 text-white px-4 py-2 rounded">
+                Export Excel
+            </a>
+        @endif
 
 
         <form action="{{ route('kategori.index') }}" method="GET" class="w-full md:w-auto">
@@ -55,7 +62,9 @@
                     <th class="border p-2 whitespace-nowrap">No</th>
                     <th class="border p-2 whitespace-nowrap">Nama Kategori</th>
                     <th class="border p-2 whitespace-nowrap">Deskripsi</th>
-                    <th class="border p-2 whitespace-nowrap">Aksi</th>
+                    @if($canManage)
+                        <th class="border p-2 whitespace-nowrap">Aksi</th>
+                    @endif
                 </tr>
             </thead>
 
@@ -71,27 +80,31 @@
                     <td class="border p-2 max-w-xs truncate" title="{{ $item->deskripsi }}">
                         {{ $item->deskripsi }}
                     </td>
-                    <td class="border p-2 text-center whitespace-nowrap">
-                        <a href="{{ route('kategori.edit', $item->id) }}"
-                           class="bg-yellow-400 px-3 py-1 rounded text-sm hover:bg-yellow-500 transition">
-                            Edit
-                        </a>
-                        <form action="{{ route('kategori.destroy', $item->id) }}"
-                              method="POST"
-                              class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button"
-                                    onclick="event.preventDefault(); confirmDelete(event);"
-                                    class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition">
-                                Hapus
-                            </button>
-                        </form>
-                    </td>
+                    @if($canManage)
+                        <td class="border p-2 text-center whitespace-nowrap">
+                            <a href="{{ route('kategori.edit', $item->id) }}"
+                               class="bg-yellow-400 px-3 py-1 rounded text-sm hover:bg-yellow-500 transition">
+                                Edit
+                            </a>
+                            <form action="{{ route('kategori.destroy', $item->id) }}"
+                                  method="POST"
+                                  class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button"
+                                        onclick="event.preventDefault(); confirmDelete(event);"
+                                        class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition">
+                                    Hapus
+                                </button>
+                            </form>
+                        </td>
+                    @else
+                        <td class="border p-2 text-center whitespace-nowrap text-gray-400">-</td>
+                    @endif
                 </tr>
                 @empty
                 <tr>
-                    <td class="border p-2 text-center" colspan="4">
+                    <td class="border p-2 text-center" colspan="{{ $canManage ? 4 : 3 }}">
                         @if($search || $filter)
                             Tidak ada data kategori yang sesuai dengan pencarian atau filter
                         @else

@@ -4,25 +4,55 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Pembayaran;
+use App\Models\RentalAlat;
+use App\Models\BookingStudio;
 
 class PembayaranSeeder extends Seeder
 {
     public function run(): void
     {
-        Pembayaran::create([
-            'rental_alat_id' => 1,
-            'tanggal_bayar' => '2026-05-14',
-            'metode_bayar' => 'Transfer',
-            'total_bayar' => 140000,
-            'status' => 'Lunas'
-        ]);
+        Pembayaran::truncate();
 
-        Pembayaran::create([
-            'rental_alat_id' => 2,
-            'tanggal_bayar' => '2026-05-15',
-            'metode_bayar' => 'Cash',
-            'total_bayar' => 120000,
-            'status' => 'Belum Lunas'
-        ]);
+        // Pembayaran Booking Studio
+        foreach (BookingStudio::all() as $booking) {
+
+            $total = $booking->total_harga ?? 0;
+
+            Pembayaran::create([
+                'jenis_transaksi'   => 'Booking Studio',
+                'booking_studio_id' => $booking->id,
+                'rental_alat_id'    => null,
+
+                'tanggal_bayar'     => now(),
+                'metode_bayar'      => 'Cash',
+
+                'total_bayar'       => $total,
+                'nominal_dibayar'   => $total,
+                'kembalian'         => 0,
+
+                'status'            => 'Lunas',
+            ]);
+        }
+
+        // Pembayaran Rental Alat
+        foreach (RentalAlat::all() as $rental) {
+
+            $total = $rental->total_harga ?? 0;
+
+            Pembayaran::create([
+                'jenis_transaksi'   => 'Rental Alat',
+                'booking_studio_id' => null,
+                'rental_alat_id'    => $rental->id,
+
+                'tanggal_bayar'     => now(),
+                'metode_bayar'      => 'Transfer',
+
+                'total_bayar'       => $total,
+                'nominal_dibayar'   => $total,
+                'kembalian'         => 0,
+
+                'status'            => 'Lunas',
+            ]);
+        }
     }
 }

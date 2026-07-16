@@ -25,8 +25,14 @@ class RentalAlat extends Model
     {
         return $this->belongsTo(AlatBand::class);
     }
+
     public function detailRental()
     {
         return $this->hasMany(DetailRental::class);
+    }
+
+    public function pembayaran()
+    {
+        return $this->hasOne(Pembayaran::class);
     }
 }
